@@ -1,10 +1,12 @@
 #include <iostream>
 #include "getopt.h"
 #include "string"
-//#include <sys/types.h>
+#include <sys/types.h>
 #include <sys/stat.h>
-//#include <unistd.h>
+#include <unistd.h>
 #include "function.h"
+
+#include "exceptions.h"
 
 int checkFileFormat(std::string &fn) {
     for (int i = 0; i < fn.length(); i++) {
@@ -69,40 +71,71 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    try {
+        if (para_n + para_w + para_c + para_h + para_t + para_r + para_j == 0) {
+            throw none_parameter();
+        }
 
-    if (para_non != 0) {
-        std::cout << "1 存在无效参数" << std::endl;
+        if (para_non != 0) {
+            throw unknown_parameter();
+        }
+
+        if (para_n + para_w + para_c == 0) {
+            throw single_additional_parameter();
+        }
+
+        if (para_n + para_w + para_c > 1) {
+            throw incompatible_parameter();
+        }
+
+        if (((para_h | para_t) | (para_r | para_j)) > 1) {
+            throw repeat_parameter();
+        }
+
+        if (!checkFileFormat(f_road)) {
+            throw format_filename();
+        }
+
+        struct stat buf{};
+        if (stat(f_road.c_str(), &buf) != 0) {
+            throw none_exist_file();
+        }
+
+        if ((para_h != 0 && para_h_arg.length() != 1) || (para_t != 0 && para_t_arg.length() != 1) ||
+            (para_j != 0 && para_j_arg.length() != 0)) {
+            throw format_parameter_content();
+        }
+    } catch (none_parameter &e) {
+        std::cout << e.what() << std::endl;
+        exit(-1);
+    }
+    catch (unknown_parameter &e) {
+        std::cerr << e.what() << std::endl;
+        exit(-1);
+    }
+    catch (single_additional_parameter &e) {
+        std::cerr << e.what() << std::endl;
+        exit(-1);
+    }
+    catch (incompatible_parameter &e) {
+        std::cerr << e.what() << std::endl;
+        exit(-1);
+    }
+    catch (repeat_parameter &e) {
+        std::cerr << e.what() << std::endl;
+        exit(-1);
+    }
+    catch (format_filename &e) {
+        std::cerr << e.what() << std::endl;
+        exit(-1);
+    } catch (none_exist_file &e) {
+        std::cerr << e.what() << std::endl;
+        exit(-1);
+    } catch (format_parameter_content &e) {
+        std::cerr << e.what() << std::endl;
+        exit(-1);
     }
 
-    if (para_n + para_w + para_c + para_h + para_t + para_r + para_j == 0) {
-        std::cout << "2 参数不存在" << std::endl;
-    }
-
-    if ((para_n + para_w + para_c == 0) && (para_h + para_t + para_r + para_j >= 1)) {
-        std::cout << "3 附加参数不能独自存在" << std::endl;
-    }
-
-    if (para_n + para_w + para_c > 1) {
-        std::cout << "4 参数不兼容" << std::endl;
-    }
-
-    if (((para_h | para_t) | (para_r | para_j)) > 1) {
-        std::cout << "5 参数重复" << std::endl;
-    }
-
-    if (!checkFileFormat(f_road)) {
-        std::cout << "6 文件格式错误" << std::endl;
-    }
-
-    struct stat *buf = nullptr;
-    if (stat(f_road.c_str(), buf) != 0) {
-        std::cout << "7 文件不存在" << std::endl;
-    }
-
-    if ((para_h != 0 && para_h_arg.length() != 1) || (para_t != 0 && para_t_arg.length() != 1) ||
-        (para_j != 0 && para_j_arg.length() != 0)) {
-        std::cout << "8 参数存在问题" << std::endl;
-    }
 
     int nWord;
     char **words = readWordsFromFile("../word_list.txt", &nWord);
