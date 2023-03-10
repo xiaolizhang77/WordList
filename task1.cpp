@@ -99,11 +99,13 @@ void printN(char *path) {
 /**
  * 计算第一个任务。
  * @param notAppear 需求5
+ * @param first 要求链开头字母，没有则为'\0'
+ * @param last 要求链结束字符，没有则为'\0'
  * @param words 单词数组
  * @param nword 单词个数。
  * @return 无返回值。
  */
-void function1(char **words, const int *nword, char notAppear) {
+void function1(char **words, const int *nword, char notAppear, char first, char last) {
     N = 0;
     printf("function1 start\n");
     struct wordsList word_list[26][26];
@@ -158,7 +160,9 @@ void function1(char **words, const int *nword, char notAppear) {
         for (i = 0; i < p.size(); i++) {
             c[i] = p[i];
         }
-        print_word_chain(word_list, c, p.size(), fp);
+        if ((first == '\0' || (c[0] + 'a' == first)) && (last == '\0' || (c[0] + 'a' == last))) {
+            print_word_chain(word_list, c, p.size(), fp);
+        }
     }
     fclose(fp);
     printN("solution.txt");

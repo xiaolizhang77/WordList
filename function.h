@@ -17,11 +17,13 @@ char **readWordsFromFile(const char *filename, int *numWords);
 
 void getFirstLastChar(char *str, char *first, char *last);
 
-void function2(char **words, const int *nword, char notAppear);
+void function2(char **words, const int *nword, char notAppear, char first, char last);
 
 void function3(char **words, const int *nword, char notAppear);
 
 void function1(char **words, const int *nword, char notAppear);
+
+void function2And4(int edge[26][26], char first, char last, int *n, int *answer);
 
 struct wordPoint {
     char *s;

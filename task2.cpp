@@ -55,3 +55,59 @@ void longest_chain(int edge[26][26], int *length, char *nodes) {
     free(lengths);
     free(prevs);
 }
+
+void
+dfs(int edge[26][26], int finalPath[], int *nFinalPath, int path[], int *nPath, char now, char last, bool self) {
+    if (self && edge[now - 'a'][now - 'a'] > 0) {
+        path[*nPath] = now - 'a';
+        *nPath = *nPath + 1;
+        dfs(edge, finalPath, nFinalPath, path, nPath, now, last, false);
+        *nPath = *nPath - 1;
+    } else {
+        if (now == last) {
+            if (*nPath > *nFinalPath) {
+                *nFinalPath = *nPath;
+                int i;
+                for (i = 0; i < *nPath; i++) {
+                    finalPath[i] = path[i];
+                }
+            }
+            return;
+        }
+        int i;
+        for (i = 0; i < 26; i++) {
+            if (i != now - 'a' && edge[now - 'a'][i] > 0) {
+                path[*nPath] = i;
+                *nPath = *nPath + 1;
+                dfs(edge, finalPath, nFinalPath, path, nPath, i + 'a', last, true);
+                *nPath = *nPath - 1;
+            }
+        }
+    }
+}
+
+#include "stdio.h";
+
+void function2And4(int edge[26][26], char first, char last, int *n, int *answer) {
+    int finalPath[100];
+    int nFinalPath = 0;
+    int path[100];
+    path[0] = first - 'a';
+    int nPath = 1;
+    dfs(edge, finalPath, &nFinalPath, path, &nPath, first, last, true);
+    if (nFinalPath > 1) {
+//        printf("%c %c %d:", first, last, nFinalPath);
+//        int i;
+//        for (i = 0; i < nFinalPath; i++) {
+//            printf("%c ", finalPath[i] + 'a');
+//        }
+//        printf("\n");
+        *n = nFinalPath;
+        int i;
+        for (i = 0; i < *n; i++) {
+            *(answer + i) = finalPath[i];
+        }
+        return;
+    }
+    *n = 0;
+}

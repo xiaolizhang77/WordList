@@ -13,7 +13,7 @@
 
 /**
  * 计算第三个任务。
- * @param notAppear 需求5
+ * @param notAppear 需求5，没有则为'\0'
  * @param words 单词数组
  * @param nword 单词个数。
  * @return 无返回值。
@@ -81,12 +81,14 @@ void function3(char **words, const int *nword, char notAppear) {
 
 /**
  * 计算第二个任务。
- * @param notAppear 需求5
+ * @param notAppear 需求5，没有则为'\0'
  * @param words 单词数组
  * @param nword 单词个数。
+ * @param first 需求4首字母，没有则为'\0'
+ * @param last 需求4尾字母，没有则为'\0'
  * @return 无返回值。
  */
-void function2(char **words, const int *nword, char notAppear) {
+void function2(char **words, const int *nword, char notAppear, char first, char last) {
     printf("function2 start\n");
     char *(wordMain[26][26]);
     int edge[26][26];
@@ -122,28 +124,83 @@ void function2(char **words, const int *nword, char notAppear) {
 //        printf("\n");
 //    }
 
-    char nodes[26];
-    int length;
-    longest_chain(edge, &length, nodes);
+    if (first == '\0' && last == '\0') {
+        char nodes[26];
+        int length;
+        longest_chain(edge, &length, nodes);
 //    for(i=0;i<length;i++){
 //        printf("%d ",nodes[i]);
 //    }
-    FILE *fp;
-    fp = fopen("solution.txt", "w");
-    fprintf(fp, "%d\n", length);
-    int nNode;
-    for (nNode = 0; nodes[nNode] != '\0'; nNode++);
+        FILE *fp;
+        fp = fopen("solution.txt", "w");
+        fprintf(fp, "%d\n", length);
+        int nNode;
+        for (nNode = 0; nodes[nNode] != '\0'; nNode++);
 
-    for (i = nNode - 1; i > 0; i--) {
+        for (i = nNode - 1; i > 0; i--) {
+            if (edge[nodes[i] - 'a'][nodes[i] - 'a'] == 1) {
+                fprintf(fp, "%s\n", wordMain[nodes[i] - 'a'][nodes[i] - 'a']);
+            }
+            fprintf(fp, "%s\n", wordMain[nodes[i] - 'a'][nodes[i - 1] - 'a']);
+        }
         if (edge[nodes[i] - 'a'][nodes[i] - 'a'] == 1) {
             fprintf(fp, "%s\n", wordMain[nodes[i] - 'a'][nodes[i] - 'a']);
         }
-        fprintf(fp, "%s\n", wordMain[nodes[i] - 'a'][nodes[i - 1] - 'a']);
+        fclose(fp);
+    } else if (first == '\0') {
+        printf("only last\n");
+        char c = 'a';
+        int n;
+        int maxN = 0;
+        int *max = nullptr;
+        int answer[100];
+        for (; c <= 'z'; c++) {
+            function2And4(edge, c, last, &n, answer);
+            if (n > maxN) {
+                maxN = n;
+                max = answer;
+            }
+        }
+        FILE *fp;
+        fp = fopen("solution.txt", "w");
+        fprintf(fp, "%d\n", maxN - 1);
+        for (i = 0; i < maxN - 1; i++) {
+            fprintf(fp, "%s\n", wordMain[max[i]][max[i + 1]]);
+        }
+        fclose(fp);
+    } else if (last == '\0') {
+        printf("only first\n");
+        char c = 'a';
+        int n;
+        int maxN = 0;
+        int *max = nullptr;
+        int answer[100];
+        for (; c <= 'z'; c++) {
+            function2And4(edge, first, c, &n, answer);
+            if (n > maxN) {
+                maxN = n;
+                max = answer;
+            }
+        }
+        FILE *fp;
+        fp = fopen("solution.txt", "w");
+        fprintf(fp, "%d\n", maxN - 1);
+        for (i = 0; i < maxN - 1; i++) {
+            fprintf(fp, "%s\n", wordMain[max[i]][max[i + 1]]);
+        }
+        fclose(fp);
+    } else {
+        int maxN = 0;
+        int max[100];
+        function2And4(edge, first, last, &maxN, max);
+        FILE *fp;
+        fp = fopen("solution.txt", "w");
+        fprintf(fp, "%d\n", maxN - 1);
+        for (i = 0; i < maxN - 1; i++) {
+            fprintf(fp, "%s\n", wordMain[max[i]][max[i + 1]]);
+        }
+        fclose(fp);
     }
-    if (edge[nodes[i] - 'a'][nodes[i] - 'a'] == 1) {
-        fprintf(fp, "%s\n", wordMain[nodes[i] - 'a'][nodes[i] - 'a']);
-    }
-    fclose(fp);
     printf("function2 end\n");
 }
 
