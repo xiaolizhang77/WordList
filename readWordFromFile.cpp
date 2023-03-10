@@ -59,7 +59,8 @@ char **readWordsFromFile(const char *filename, int *numWords) {
         }
         count++;
     }
-    *numWords = wordIndex;
+    words[wordIndex][wordLength] = '\0';
+    *numWords = ++wordIndex;
     fclose(fp);
     printf("readWordsFromFile end\n");
     return words;
