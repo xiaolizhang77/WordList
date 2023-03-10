@@ -129,6 +129,7 @@ int main(int argc, char *argv[]) {
         std::cerr << e.what() << std::endl;
         exit(-1);
     } catch (none_exist_file &e) {
+        std::cerr << f_road << std::endl;
         std::cerr << e.what() << std::endl;
         exit(-1);
     } catch (format_parameter_content &e) {
@@ -138,7 +139,7 @@ int main(int argc, char *argv[]) {
 
 
     int nWord;
-    char **words = readWordsFromFile("../word_list.txt", &nWord);
+    char **words = readWordsFromFile(f_road.c_str(), &nWord);
     // n
     // TODO
 
