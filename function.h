@@ -5,6 +5,10 @@
 #ifndef SOFTWARE_ENGINEERING_FUNCTION_H
 #define SOFTWARE_ENGINEERING_FUNCTION_H
 
+#include "bits/stdc++.h"
+
+using namespace std;
+
 void longest_chain(int edge[26][26], int *length, char *nodes);
 
 void longest_chain_char(int edge[26][26], int *length, char *nodes);
@@ -17,13 +21,15 @@ char **readWordsFromFile(const char *filename, int *numWords);
 
 void getFirstLastChar(char *str, char *first, char *last);
 
-void function2(char **words, const int *nword, char notAppear, char first, char last);
+void function2(char **words, const int *nword, char notAppear, char first, char last, vector<string> &result);
 
-void function3(char **words, const int *nword, char notAppear);
+void function3(char **words, const int *nword, char notAppear, char first, char last, vector<string> &result);
 
-void function1(char **words, const int *nword, char notAppear);
+void function1(char **words, const int *nword, char notAppear, char first, char last, vector<vector<string>> &chain);
 
 void function2And4(int edge[26][26], char first, char last, int *n, int *answer);
+
+void function3And4(int edge[26][26], char first, char last, int *n, int *answer, int *nLength);
 
 struct wordPoint {
     char *s;

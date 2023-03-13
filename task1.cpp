@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include "function.h"
-#include <string.h>
 #include <fstream>
 
 int N;
@@ -42,42 +41,46 @@ void find_chain(int edge[26][26], vector<vector<int>> &allChain) {
     }
 }
 
-void print(char **s, int n, FILE *fp) {
+void print(char **s, int n, FILE *fp, vector<vector<string>> &allChain) {
     if (n < 2) {
         return;
     }
     N++;
+    vector<string> chain;
     int i;
     for (i = 0; i < n; i++) {
+        chain.push_back(s[i]);
         fprintf(fp, "%s ", s[i]);
     }
     fprintf(fp, "\n");
+    allChain.push_back(chain);
 }
 
 void print_word(struct wordsList word_list[26][26], int *chain, int depth, int nWord, char **s, FILE *fp, int size,
-                bool first) {
+                bool first, vector<vector<string>> &allChain) {
     if (first) {
-        print_word(word_list, chain, depth, nWord, s, fp, size, false);
+        print_word(word_list, chain, depth, nWord, s, fp, size, false, allChain);
         if ((word_list[chain[depth]][chain[depth]].headWord)->next != nullptr) {
             s[nWord] = (word_list[chain[depth]][chain[depth]].headWord)->next->s;
-            print_word(word_list, chain, depth, nWord + 1, s, fp, size, false);
+            print_word(word_list, chain, depth, nWord + 1, s, fp, size, false, allChain);
         }
     } else {
         if (size <= depth + 1) {
-            print(s, nWord, fp);
+            print(s, nWord, fp, allChain);
             return;
         }
         struct wordPoint *p = (word_list[chain[depth]][chain[depth + 1]].headWord);
         for (; p->next != nullptr; p = p->next) {
             s[nWord] = p->next->s;
-            print_word(word_list, chain, depth + 1, nWord + 1, s, fp, size, true);
+            print_word(word_list, chain, depth + 1, nWord + 1, s, fp, size, true, allChain);
         }
     }
 }
 
-void print_word_chain(struct wordsList word_list[26][26], int *chain, int size, FILE *fp) {
+void
+print_word_chain(struct wordsList word_list[26][26], int *chain, int size, FILE *fp, vector<vector<string>> &allChain) {
     char *s[10000];
-    print_word(word_list, chain, 0, 0, s, fp, size, true);
+    print_word(word_list, chain, 0, 0, s, fp, size, true, allChain);
 }
 
 void printN(char *path) {
@@ -105,7 +108,7 @@ void printN(char *path) {
  * @param nword 单词个数。
  * @return 无返回值。
  */
-void function1(char **words, const int *nword, char notAppear, char first, char last) {
+void function1(char **words, const int *nword, char notAppear, char first, char last, vector<vector<string>> &chain) {
     N = 0;
     printf("function1 start\n");
     struct wordsList word_list[26][26];
@@ -161,7 +164,7 @@ void function1(char **words, const int *nword, char notAppear, char first, char 
             c[i] = p[i];
         }
         if ((first == '\0' || (c[0] + 'a' == first)) && (last == '\0' || (c[0] + 'a' == last))) {
-            print_word_chain(word_list, c, p.size(), fp);
+            print_word_chain(word_list, c, p.size(), fp, chain);
         }
     }
     fclose(fp);
