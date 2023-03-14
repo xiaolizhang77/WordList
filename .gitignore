@@ -1,3 +1,5 @@
 # cmake build文件
 cmake-build-debug/
 
+.idea
+
