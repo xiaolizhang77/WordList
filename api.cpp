@@ -12,7 +12,8 @@ int gen_chains_all(char *words[], int len, vector<vector<string>> &result) {
 int
 gen_chain_word(char *words[], int len, vector<string> &result, char head, char tail, char reject, bool enable_loop) {
     if (enable_loop) {
-
+        int maxLen;
+        searchUseInApi(words, len, head, tail, reject, 0, result, &maxLen);
     } else {
         function2(words, &len, reject, head, tail, result);
         return result.size();
@@ -22,7 +23,8 @@ gen_chain_word(char *words[], int len, vector<string> &result, char head, char t
 int
 gen_chain_char(char *words[], int len, vector<string> &result, char head, char tail, char reject, bool enable_loop) {
     if (enable_loop) {
-
+        int maxLen;
+        searchUseInApi(words, len, head, tail, reject, 1, result, &maxLen);
     } else {
         function3(words, &len, reject, head, tail, result);
         return result.size();
