@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include "function.h"
-#include <fstream>
 
 int N;
 using namespace std;
@@ -49,7 +48,7 @@ void print(char **s, int n, FILE *fp, vector<vector<string>> &allChain) {
     vector<string> chain;
     int i;
     for (i = 0; i < n; i++) {
-        chain.push_back(s[i]);
+        chain.emplace_back(s[i]);
 //        fprintf(fp, "%s ", s[i]);
     }
     fprintf(fp, "\n");
@@ -125,12 +124,12 @@ void function1(char **words, const int *nword, char notAppear, char first, char 
     }
     struct wordPoint word[10000];
     for (i = 0; i < *nword; i++) {
-        char first, last;
-        getFirstLastChar(words[i], &first, &last);
-        if (notAppear == '\0' || first != notAppear) {
-            struct wordPoint *p = word_list[first - 'a'][last - 'a'].headWord;
+        char firstChar, lastChar;
+        getFirstLastChar(words[i], &firstChar, &lastChar);
+        if (notAppear == '\0' || firstChar != notAppear) {
+            struct wordPoint *p = word_list[firstChar - 'a'][lastChar - 'a'].headWord;
             for (; p->next != nullptr; p = p->next) {
-                printf(p->s);
+                printf("%s", p->s);
             }
             word[i].s = words[i];
             word[i].next = nullptr;
@@ -146,17 +145,17 @@ void function1(char **words, const int *nword, char notAppear, char first, char 
     }
 
     for (i = 0; i < *nword; i++) {
-        char first, last;
-        getFirstLastChar(*(words + i), &first, &last);
-        //printf("%s %c %c\n", *(words + i), first, last);
-        if (edge[first - 'a'][last - 'a'] == 0) {
-            edge[first - 'a'][last - 'a'] = 1;
+        char firstChar, lastChar;
+        getFirstLastChar(*(words + i), &firstChar, &lastChar);
+        //printf("%s %c %c\n", *(words + i), firstChar, lastChar);
+        if (edge[firstChar - 'a'][lastChar - 'a'] == 0) {
+            edge[firstChar - 'a'][lastChar - 'a'] = 1;
         }
     }
 
     vector<vector<int>> allChain;
     find_chain(edge, allChain);
-    FILE *fp;
+    FILE *fp = nullptr;
 //    fp = fopen("solution.txt", "w");
     for (const auto &p: allChain) {
         int c[26];

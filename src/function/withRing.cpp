@@ -2,7 +2,6 @@
 // Created by leera on 2023/3/13.
 //
 
-#include "iostream"
 #include "vector"
 #include "algorithm"
 #include "string"
@@ -25,7 +24,7 @@ void get_map(const char *filename, char para_j) {
 
     if (para_j == 0) {
         for (int i = 0; i < wordNum; i++) {
-            point *p = (point *) malloc(sizeof(point));
+            auto *p = (point *) malloc(sizeof(point));
             p->word = *(word + i);
             p->num = strlen(p->word);
             p->flag = 0;
@@ -45,7 +44,7 @@ void get_map(const char *filename, char para_j) {
     } else {
         for (int i = 0; i < wordNum; i++) {
             if (*(word + i)[0] != para_j) {
-                point *p = (point *) malloc(sizeof(point));
+                auto *p = (point *) malloc(sizeof(point));
                 p->word = *(word + i);
                 p->num = strlen(p->word);
                 p->flag = 0;
@@ -68,7 +67,7 @@ void get_map(const char *filename, char para_j) {
 
 void
 dfs(charPoint *root, int i, int j, int k, int flag, int len, int *max_len, charPoint **point, int type, char para_t) {
-    charPoint *p = (charPoint *) malloc(sizeof(charPoint));
+    auto *p = (charPoint *) malloc(sizeof(charPoint));
     p->t = map2d[i][j][k];
     p->t->flag = flag;
 
@@ -91,7 +90,7 @@ dfs(charPoint *root, int i, int j, int k, int flag, int len, int *max_len, charP
 }
 
 void dfs(charPoint *root, int i, int j, int k, int flag, int len, int *max_len, charPoint **point, int type) {
-    charPoint *p = (charPoint *) malloc(sizeof(charPoint));
+    auto *p = (charPoint *) malloc(sizeof(charPoint));
     p->t = map2d[i][j][k];
     p->t->flag = flag;
 
@@ -146,7 +145,7 @@ void search(const char *filename, char para_h, char para_t, char para_j, int typ
             }
         }
 
-    } else if (para_h != 0 && para_t != 0) {
+    } else if (para_h != 0) {
         for (int j = 0; j < 26; j++) {
             for (int k = 0; k < map2d[para_h - 'a'][j].size(); k++) {
                 flag++;
@@ -171,7 +170,7 @@ void search(const char *filename, char para_h, char para_t, char para_j, int typ
 void getMapUseInApi(char **word, int wordNum, int para_j) {
     if (para_j == 0) {
         for (int i = 0; i < wordNum; i++) {
-            point *p = (point *) malloc(sizeof(point));
+            auto *p = (point *) malloc(sizeof(point));
             p->word = *(word + i);
             p->num = strlen(p->word);
             p->flag = 0;
@@ -191,7 +190,7 @@ void getMapUseInApi(char **word, int wordNum, int para_j) {
     } else {
         for (int i = 0; i < wordNum; i++) {
             if (*(word + i)[0] != para_j) {
-                point *p = (point *) malloc(sizeof(point));
+                auto *p = (point *) malloc(sizeof(point));
                 p->word = *(word + i);
                 p->num = strlen(p->word);
                 p->flag = 0;
@@ -214,7 +213,7 @@ void getMapUseInApi(char **word, int wordNum, int para_j) {
 void searchUseInApi(char **word, int wordNum, char para_h, char para_t, char para_j,
                     int type, vector<string> &result, int *max) {
     getMapUseInApi(word, wordNum, para_j);
-    charPoint **lastPoint;
+    charPoint **lastPoint = nullptr;
     charPoint *max_point;
     int max_len = 0;
     int flag = 0;
@@ -236,7 +235,7 @@ void searchUseInApi(char **word, int wordNum, char para_h, char para_t, char par
             }
         }
 
-    } else if (para_h != 0 && para_t != 0) {
+    } else if (para_h != 0) {
         for (int j = 0; j < 26; j++) {
             for (int k = 0; k < map2d[para_h - 'a'][j].size(); k++) {
                 flag++;
@@ -267,6 +266,6 @@ void searchUseInApi(char **word, int wordNum, char para_h, char para_t, char par
 
     while (i > 0) {
         //std::cout << mmm[--i]->t->word << std::endl;
-        result.push_back(mmm[--i]->t->word);
+        result.emplace_back(mmm[--i]->t->word);
     }
 }

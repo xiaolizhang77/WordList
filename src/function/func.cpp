@@ -1,6 +1,6 @@
 #include "function.h"
 #include <cstdio>
-#include <string.h>
+#include <cstring>
 
 /**
  * 计算第三个任务。
@@ -21,12 +21,12 @@ void function3(char **words, const int *nword, char notAppear, char first, char 
         }
     }
     for (i = 0; i < *nword; i++) {
-        char first, last;
-        getFirstLastChar(*(words + i), &first, &last);
-        //printf("%s %c %c\n", *(words + i), first, last);
-        if (edge[first - 'a'][last - 'a'] < strlen(*(words + i))) {
-            edge[first - 'a'][last - 'a'] = strlen(*(words + i));
-            wordMain[first - 'a'][last - 'a'] = *(words + i);
+        char firstChar, lastChar;
+        getFirstLastChar(*(words + i), &firstChar, &lastChar);
+        //printf("%s %c %c\n", *(words + i), first, lastChar);
+        if (edge[firstChar - 'a'][lastChar - 'a'] < strlen(*(words + i))) {
+            edge[firstChar - 'a'][lastChar - 'a'] = strlen(*(words + i));
+            wordMain[firstChar - 'a'][lastChar - 'a'] = *(words + i);
         }
     }
 
@@ -77,12 +77,12 @@ void function3(char **words, const int *nword, char notAppear, char first, char 
 
         for (i = nNode - 1; i > 0; i--) {
             if (edge[nodes[i] - 'a'][nodes[i] - 'a'] > 0) {
-                result.push_back(wordMain[nodes[i] - 'a'][nodes[i] - 'a']);
+                result.emplace_back(wordMain[nodes[i] - 'a'][nodes[i] - 'a']);
             }
-            result.push_back(wordMain[nodes[i] - 'a'][nodes[i - 1] - 'a']);
+            result.emplace_back(wordMain[nodes[i] - 'a'][nodes[i - 1] - 'a']);
         }
         if (edge[nodes[i] - 'a'][nodes[i] - 'a'] > 0) {
-            result.push_back(wordMain[nodes[i] - 'a'][nodes[i] - 'a']);
+            result.emplace_back(wordMain[nodes[i] - 'a'][nodes[i] - 'a']);
         }
     } else if (first == '\0') {
         printf("only last\n");
@@ -110,9 +110,10 @@ void function3(char **words, const int *nword, char notAppear, char first, char 
 //            result.push_back(wordMain[max[i]][max[i + 1]]);
 //        }
 //        fclose(fp);
-
-        for (i = 0; i < maxN - 1; i++) {
-            result.push_back(wordMain[max[i]][max[i + 1]]);
+        if (max != nullptr) {
+            for (i = 0; i < maxN - 1; i++) {
+                result.emplace_back(wordMain[max[i]][max[i + 1]]);
+            }
         }
     } else if (last == '\0') {
         printf("only first\n");
@@ -140,9 +141,10 @@ void function3(char **words, const int *nword, char notAppear, char first, char 
 //            result.push_back(wordMain[max[i]][max[i + 1]]);
 //        }
 //        fclose(fp);
-
-        for (i = 0; i < maxN - 1; i++) {
-            result.push_back(wordMain[max[i]][max[i + 1]]);
+        if (max != nullptr) {
+            for (i = 0; i < maxN - 1; i++) {
+                result.emplace_back(wordMain[max[i]][max[i + 1]]);
+            }
         }
     } else {
         int maxN = 0;
@@ -160,7 +162,7 @@ void function3(char **words, const int *nword, char notAppear, char first, char 
 //        fclose(fp);
 
         for (i = 0; i < maxN - 1; i++) {
-            result.push_back(wordMain[max[i]][max[i + 1]]);
+            result.emplace_back(wordMain[max[i]][max[i + 1]]);
         }
     }
 
@@ -177,7 +179,6 @@ void function3(char **words, const int *nword, char notAppear, char first, char 
  * @return 无返回值。
  */
 void function2(char **words, const int *nword, char notAppear, char first, char last, vector<string> &result) {
-    bool print = false;
     printf("function2 start\n");
     char *(wordMain[26][26]);
     int edge[26][26];
@@ -189,12 +190,12 @@ void function2(char **words, const int *nword, char notAppear, char first, char 
         }
     }
     for (i = 0; i < *nword; i++) {
-        char first, last;
-        getFirstLastChar(*(words + i), &first, &last);
-        //printf("%s %c %c\n", *(words + i), first, last);
-        if (edge[first - 'a'][last - 'a'] == 0) {
-            edge[first - 'a'][last - 'a'] = 1;
-            wordMain[first - 'a'][last - 'a'] = *(words + i);
+        char firstChar, lastChar;
+        getFirstLastChar(*(words + i), &firstChar, &lastChar);
+        //printf("%s %c %c\n", *(words + i), firstChar, lastChar);
+        if (edge[firstChar - 'a'][lastChar - 'a'] == 0) {
+            edge[firstChar - 'a'][lastChar - 'a'] = 1;
+            wordMain[firstChar - 'a'][lastChar - 'a'] = *(words + i);
         }
     }
 
@@ -244,12 +245,12 @@ void function2(char **words, const int *nword, char notAppear, char first, char 
         for (nNode = 0; nodes[nNode] != '\0'; nNode++);
         for (i = nNode - 1; i > 0; i--) {
             if (edge[nodes[i] - 'a'][nodes[i] - 'a'] == 1) {
-                result.push_back(wordMain[nodes[i] - 'a'][nodes[i] - 'a']);
+                result.emplace_back(wordMain[nodes[i] - 'a'][nodes[i] - 'a']);
             }
-            result.push_back(wordMain[nodes[i] - 'a'][nodes[i - 1] - 'a']);
+            result.emplace_back(wordMain[nodes[i] - 'a'][nodes[i - 1] - 'a']);
         }
         if (edge[nodes[i] - 'a'][nodes[i] - 'a'] == 1) {
-            result.push_back(wordMain[nodes[i] - 'a'][nodes[i] - 'a']);
+            result.emplace_back(wordMain[nodes[i] - 'a'][nodes[i] - 'a']);
         }
 
     } else if (first == '\0') {
@@ -274,9 +275,10 @@ void function2(char **words, const int *nword, char notAppear, char first, char 
 //            result.push_back(wordMain[max[i]][max[i + 1]]);
 //        }
 //        fclose(fp);
-
-        for (i = 0; i < maxN - 1; i++) {
-            result.push_back(wordMain[max[i]][max[i + 1]]);
+        if (max != nullptr) {
+            for (i = 0; i < maxN - 1; i++) {
+                result.emplace_back(wordMain[max[i]][max[i + 1]]);
+            }
         }
     } else if (last == '\0') {
         printf("only first\n");
@@ -300,9 +302,10 @@ void function2(char **words, const int *nword, char notAppear, char first, char 
 //            result.push_back(wordMain[max[i]][max[i + 1]]);
 //        }
 //        fclose(fp);
-
-        for (i = 0; i < maxN - 1; i++) {
-            result.push_back(wordMain[max[i]][max[i + 1]]);
+        if (max != nullptr) {
+            for (i = 0; i < maxN - 1; i++) {
+                result.emplace_back(wordMain[max[i]][max[i + 1]]);
+            }
         }
     } else {
         int maxN = 0;
@@ -318,7 +321,7 @@ void function2(char **words, const int *nword, char notAppear, char first, char 
 //        fclose(fp);
 
         for (i = 0; i < maxN - 1; i++) {
-            result.push_back(wordMain[max[i]][max[i + 1]]);
+            result.emplace_back(wordMain[max[i]][max[i + 1]]);
         }
     }
     printf("function2 end\n");
