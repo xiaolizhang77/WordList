@@ -4,11 +4,13 @@
 
 using namespace std;
 
+__declspec(dllexport)
 int gen_chains_all(char *words[], int len, vector<vector<string>> &result) {
     function1(words, &len, '\0', '\0', '\0', result);
     return result.size();
 }
 
+__declspec(dllexport)
 int
 gen_chain_word(char *words[], int len, vector<string> &result, char head, char tail, char reject, bool enable_loop) {
     if (enable_loop) {
@@ -21,6 +23,7 @@ gen_chain_word(char *words[], int len, vector<string> &result, char head, char t
     }
 }
 
+__declspec(dllexport)
 int
 gen_chain_char(char *words[], int len, vector<string> &result, char head, char tail, char reject, bool enable_loop) {
     if (enable_loop) {
