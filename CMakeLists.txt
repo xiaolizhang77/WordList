@@ -30,8 +30,8 @@ ADD_SUBDIRECTORY(src)
 #        src/function/withRing.cpp
 #        )
 
-add_subdirectory(googletest)
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+#add_subdirectory(googletest)
+#include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 add_library(MyLibrary SHARED
         src/api/api.cpp

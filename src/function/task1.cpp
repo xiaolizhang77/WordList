@@ -2,6 +2,8 @@
 #include <vector>
 #include "function.h"
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wwritable-strings"
 int N;
 using namespace std;
 
@@ -118,7 +120,7 @@ void function1(char **words, const int *nword, char notAppear, char first, char 
             word_list[i][j].first = i + 'a';
             word_list[i][j].last = j + 'a';
             head[i][j].next = nullptr;
-            head[i][j].s = "this is word head ";
+            head[i][j].s = nullptr;
             word_list[i][j].headWord = &(head[i][j]);
         }
     }
@@ -170,3 +172,5 @@ void function1(char **words, const int *nword, char notAppear, char first, char 
 //    printN("solution.txt");
     printf("function1 end\n");
 }
+
+#pragma clang diagnostic pop
