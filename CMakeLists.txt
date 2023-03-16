@@ -3,12 +3,15 @@ project(WordList)
 #set(CMAKE_EXE_LINKER_FLAGS "-static")
 set(CMAKE_CXX_STANDARD 14)
 
-#静态库
-#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-#动态库
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
 #可执行文件
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# 设置 .exe 文件的输出目录
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+
+# 设置 .dll 文件的输出目录
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
 #未知
 #include_directories(src src/api src/function src/output src/exceptions)
@@ -45,10 +48,9 @@ add_library(MyLibrary SHARED
         )
 
 
-
 set_target_properties(MyLibrary PROPERTIES OUTPUT_NAME "word_list")
 
-ADD_EXECUTABLE(WordList ./src/main.cpp)
+ADD_EXECUTABLE(Wordlist ./src/main.cpp)
 
-target_link_libraries(WordList api exceptions function output)
-target_link_libraries(WordList MyLibrary)
+target_link_libraries(Wordlist api exceptions function output)
+target_link_libraries(Wordlist MyLibrary)
