@@ -50,7 +50,7 @@ void print(char **s, int n, FILE *fp, vector<vector<string>> &allChain) {
     int i;
     for (i = 0; i < n; i++) {
         chain.push_back(s[i]);
-        fprintf(fp, "%s ", s[i]);
+//        fprintf(fp, "%s ", s[i]);
     }
     fprintf(fp, "\n");
     allChain.push_back(chain);
@@ -157,7 +157,7 @@ void function1(char **words, const int *nword, char notAppear, char first, char 
     vector<vector<int>> allChain;
     find_chain(edge, allChain);
     FILE *fp;
-    fp = fopen("solution.txt", "w");
+//    fp = fopen("solution.txt", "w");
     for (const auto &p: allChain) {
         int c[26];
         for (i = 0; i < p.size(); i++) {
@@ -167,7 +167,7 @@ void function1(char **words, const int *nword, char notAppear, char first, char 
             print_word_chain(word_list, c, p.size(), fp, chain);
         }
     }
-    fclose(fp);
-    printN("solution.txt");
+//    fclose(fp);
+//    printN("solution.txt");
     printf("function1 end\n");
 }
