@@ -81,9 +81,23 @@
 
 ​		使用深度优先搜索（DFS）方法遍历 map2d 中的单词，寻找符合条件的最长单词链。使用 `search` 和 `searchUseInApi` 函数根据指定的条件（如指定的开头字母 para_h，结尾字母 para_t，以及是否排除指定的字母 para_j）调用 `dfs` 函数，并记录找到的最长单词链。我们提供了一个 API 函数 searchUseInApi，用于在外部调用时传入指定的单词列表、开头字母、结尾字母等条件，并返回最长单词链的结果。
 
+#### 第二阶段
+
+项目封装函数如下：
+
+```c
+int gen_chains_all(char *words[], int len, vector<vector<string>> &result);
+
+int gen_chain_word(char *words[], int len, vector<string> &result, char head, char tail, char reject, bool enable_loop);
+
+int gen_chain_char(char *words[], int len, vector<string> &result, char head, char tail, char reject, bool enable_loop);
+```
+
 ### 5 编译无警告
 
+以下是项目编译过程中无警告截图：
 
+![image_0](images\image_0.png)
 
 ### 6 UML 图
 
