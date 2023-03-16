@@ -27,6 +27,9 @@ ADD_SUBDIRECTORY(src)
 #        src/function/withRing.cpp
 #        )
 
+add_subdirectory(googletest)
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+
 add_library(MyLibrary SHARED
         src/api/api.cpp
         src/exceptions/exceptions.cpp
@@ -41,6 +44,11 @@ add_library(MyLibrary SHARED
         src/function/withRing.cpp
         )
 
+
+
+set_target_properties(MyLibrary PROPERTIES OUTPUT_NAME "word_list")
+
 ADD_EXECUTABLE(WordList ./src/main.cpp)
 
 target_link_libraries(WordList api exceptions function output)
+target_link_libraries(WordList MyLibrary)
