@@ -1,27 +1,13 @@
 #include <iostream>
 #include "getopt.h"
 #include "string"
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include "function.h"
 
-#include "exceptions.h"
-
-int checkFileFormat(std::string &fn) {
-    for (int i = 0; i < fn.length(); i++) {
-        if (fn[i] == '.') {
-            if (fn.length() - i == 4) {
-                if (fn[i + 1] == 't' && fn[i + 2] == 'x' && fn[i + 3] == 't') {
-                    return 1;
-                } else { return 0; }
-            } else {
-                return 0;
-            }
-        }
-    }
-    return 0;
-}
+#include "function/function.h"
+#include "exceptions/exceptions.h"
+#include "api/api.h"
+#include "output/output.h"
 
 int main(int argc, char *argv[]) {
     int o;
@@ -140,22 +126,28 @@ int main(int argc, char *argv[]) {
 
     int nWord;
     char **words = readWordsFromFile(f_road.c_str(), &nWord);
-    // n
-    // TODO
 
+    if (para_n != 0) {
+        vector<vector<string>> result;
+        int size;
+        size = gen_chains_all(words, nWord, result);
+        output(size,result);
+    } else if (para_w != 0) {
+        vector<string> result;
+        int size;
+        bool en_loop = para_r != 0;
+        size = gen_chain_word(words, nWord, result, para_h_arg[0], para_t_arg[0], para_j_arg[0],
+                              en_loop);
+        output(size,result);
 
-    if (para_w) {// w
-        if (para_j == 0) {
-            function2(words, &nWord, '\0');
-        } else {
-            function2(words, &nWord, para_j_arg[0]);
-        }
-    } else if (para_c) {// c
-        if (para_j == 0) {
-            function3(words, &nWord, '\0');
-        } else {
-            function3(words, &nWord, para_j_arg[0]);
-        }
+    }else if(para_c!=0){
+        vector<string> result;
+        int size;
+        bool en_loop = para_r != 0;
+        size = gen_chain_char(words, nWord, result, para_h_arg[0], para_t_arg[0], para_j_arg[0],
+                              en_loop);
+        output(size,result);
     }
+
     return 0;
 }

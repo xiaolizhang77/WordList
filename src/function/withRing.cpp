@@ -113,14 +113,15 @@ void dfs(charPoint *root, int i, int j, int k, int flag, int len, int *max_len, 
     }
 }
 
-//有点麻
-//参数说明
-//filename:文件路径
-//para:各个参数
-//type:1-c,0-w
-//lastpoint:最后一个节点
-//max:最大长度或字符数
 
+/**
+ * 考虑有回环的情况计算任务2和任务3
+ * @param lastpoint 结构charPoint的最后一个节点
+ * @param max 最长链的大小或字母数
+ * @param filename 读取文件名
+ * @param type 0->任务2；1->任务3
+ * @return 无返回值。
+ */
 void search(const char *filename, char para_h, char para_t, char para_j, int type, charPoint **lastPoint, int *max) {
     get_map(filename, para_j);
 
@@ -165,21 +166,6 @@ void search(const char *filename, char para_h, char para_t, char para_j, int typ
 
     *lastPoint = max_point;
     *max = max_len;
-
-//    charPoint *mmm[100];
-//    int i = 0;
-//    charPoint *p = max_point;
-//    while (p != nullptr) {
-//        mmm[i++] = p;
-//        p = p->prev;
-//    }
-//
-//    while (i > 0) {
-//        std::cout << mmm[--i]->t->word << std::endl;
-//    }
-//    测试输出
-
-
 }
 
 void getMapUseInApi(char **word, int wordNum, int para_j) {

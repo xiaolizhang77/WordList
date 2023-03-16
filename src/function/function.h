@@ -52,9 +52,9 @@ typedef struct charPoint {
     struct charPoint *prev;
 } charPoint;
 
-void search(const char *filename, char para_h, char para_t, char para_j, int type, charPoint **lastPoint, int *max);
-
 void searchUseInApi(char **word, int wordNum, char para_h, char para_t, char para_j,
                     int type, vector<string> &result, int *max);
+
+int checkFileFormat(std::string &fn);
 
 #endif //SOFTWARE_ENGINEERING_FUNCTION_H

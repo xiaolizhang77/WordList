@@ -95,7 +95,7 @@ dfs(int edge[26][26], int finalPath[], int *nFinalPath, int path[], int *nPath, 
     }
 }
 
-#include "stdio.h";
+#include "stdio.h"
 
 void function3And4(int edge[26][26], char first, char last, int *n, int *answer, int *nLength) {
     int finalPath[100];
