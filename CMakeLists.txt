@@ -3,7 +3,7 @@ project(WordList)
 #set(CMAKE_EXE_LINKER_FLAGS "-static")
 set(CMAKE_CXX_STANDARD 14)
 
-
+set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 #可执行文件
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -52,7 +52,8 @@ add_library(MyLibrary SHARED
 
 set_target_properties(MyLibrary PROPERTIES OUTPUT_NAME "word_list")
 
-ADD_EXECUTABLE(Wordlist ./src/main.cpp)
+ADD_EXECUTABLE(word_list ./src/main.cpp)
 
-target_link_libraries(Wordlist api exceptions function output)
-target_link_libraries(Wordlist MyLibrary)
+target_link_libraries(word_list api exceptions function output)
+
+target_link_libraries(word_list MyLibrary)
