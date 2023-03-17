@@ -133,6 +133,44 @@ Design by Contract（契约式设计）是一种软件开发方法，它强调�
 
 ### 9 测试
 
+#### 组内测试
+
+![image_1](images\image_1.png)
+
+​		在我们的项目中，测试部分的目的是验证程序功能的正确性。具体来说，测试部分的核心是对 `libword_list.dll` 动态链接库中定义的函数进行测试。这个库提供了一系列用于处理单词链的功能。项目中的测试部分包含以下几个文件：
+
+1. `CMakeLists.txt`：定义了如何构建和组织测试部分的 CMake 配置文件。
+2. `test_wordlist.cpp`：包含了用于测试 `libword_list.dll` 的主要功能的主程序。
+3. `word_list.h`：定义了 `libword_list.dll` 的接口和相关导入导出宏。
+4. `readWordFromFile.cpp`：实现从文件中读取单词的功能。
+
+下面我们详细分析这几个文件的作用和如何进行测试：
+
+##### CMakeLists.txt
+
+​		这个文件定义了如何构建测试目标。它首先设置了测试目标名称为 `wordlist_test`，然后添加了所有相关的源文件。之后，它创建一个可执行文件目标，并设置其输出目录。接下来，包含了头文件目录，并链接了 `libword_list.dll` 动态库。最后，它启用了 C++11 标准。
+
+##### test_wordlist.cpp
+
+​		这个文件包含了测试的主程序。主要步骤如下：
+
+1. 输出 "test start..." 提示测试开始。
+2. 调用 `readWordsFromFile` 函数从 "test.txt" 文件中读取单词，保存在字符串数组 `strings` 中。
+3. 调用待测试的函数，将结果保存在 `result` 变量中。
+4. 输出 "test end!" 提示测试结束。
+
+##### word_list.h
+
+​		这个文件定义了 `libword_list.dll` 的接口。它首先根据编译器设置导入导出宏，然后包含了所有需要的头文件和命名空间。接着，它声明了 `libword_list.dll` 中导出的函数，如 `gen_chains_all`, `gen_chain_word`, `gen_chain_char`。最后，它声明了 `readWordsFromFile` 函数的原型。
+
+##### readWordFromFile.cpp
+
+​		这个文件实现了 `readWordsFromFile` 函数，它从指定的文件中读取单词，并返回一个包含所有单词的字符串数组。这个函数在测试主程序中被调用，用于从 "test.txt" 文件中读取单词。
+
+​		整个测试过程是通过编译并运行 `wordlist_test` 可执行文件来完成的。当运行该可执行文件时，它会调用 `libword_list.dll` 中的相关函数，测试其功能是否符合预期。
+
+#### 组间合作测试
+
 
 
 ### 10 异常处理
