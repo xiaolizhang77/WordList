@@ -7,6 +7,24 @@ from ttkbootstrap.constants import *
 
 import tkinter as tk
 
+from ctypes import *
+
+
+class RetTwoDim(Structure):
+    _fields_ = [
+        ('dataList', (c_char_p * 1000) * 1000),
+        ('dataNumOne', c_int * 1000),
+        ('dataNumTwo', c_int)
+    ]
+
+
+class RetOneDim(Structure):
+    _fields_ = [
+        ('dataList', c_char_p * 1000),
+        ('dataNum', c_int)
+    ]
+
+
 root = ttk.Window()
 root.title("WordList")
 sw = root.winfo_screenwidth()
@@ -38,7 +56,6 @@ scrollbar.pack(fill=Y, side='right')
 dataText.place(relx=0.1, rely=0.1, relwidth=0.8, relheight=0.8)
 
 dataFFrame = ttk.Frame(dataFrame, name="file")
-
 
 
 def askFileName(label):
@@ -230,24 +247,83 @@ def startCalculate(win):
     data = []
     # 数据处理
     if way2choose == "input":
-        data = dataText.get("1.0", ttk.END).split(' ')
+        data = dataText.get("1.0", ttk.END).split()
     else:
         with open(filename, 'r') as f:
-            data = f.read().split(' ')
+            data = f.read().split()
 
-    # 整理参数
-    # TODO
+    # print(data,eParaChoose.get(),aParaChoose[0].get())
+    data_ctypes = []
+    for i in data:
+        data_ctypes.append(i.encode('utf-8'))
+    data_words = (c_char_p * len(data))(*data_ctypes)
 
-    start = time.time()
-    # 调用函数
-    # TODO
+    paras = []
+    for i in range(3):
+        if aParaChoose[i].get() == 0:
+            paras.append(b'\0')
+        else:
+            paras.append(bytes(aParaContent[i].get())[0])
+    if aParaChoose[3] == 0:
+        paras.append(False)
+    else:
+        paras.append(True)
 
-    # out代表结果输出
-    out = [str(i) for i in range(50)]
+    out = []
+    start = end = 0
+    if eParaChoose.get() == "-n":
+        libc = windll.LoadLibrary("./libapi.dll")
+        func = libc.gen_chains_all_cpy
+        func.restype = POINTER(RetTwoDim)
 
-    end = time.time()
+        start = time.time()
+        ret = func(pointer(data_words), c_int(len(data)))
+        end = time.time()
+
+        for i in range(ret.contents.dataNumTwo):
+            out_s = ""
+            for j in range(ret.contents.dataNumOne[i]):
+                out_s += ret.contents.dataList[i][j]
+            out.append(out_s)
+        pass
+
+    elif eParaChoose.get() == "-w":
+        libc = windll.LoadLibrary("./libapi.dll")
+        func = libc.gen_chain_word_cpy
+        func.restype = POINTER(RetOneDim)
+
+        start = time.time()
+        ret = func(pointer(data_words),
+                   c_int(len(data)),
+                   c_char(paras[0]),
+                   c_char(paras[1]),
+                   c_char(paras[2]),
+                   c_bool(paras[3]))
+
+        end = time.time()
+
+        for i in range(ret.contents.dataNum):
+            out.append(ret.contents.dataList[i])
+
+    elif eParaChoose.get() == "-c":
+        libc = windll.LoadLibrary("./libapi.dll")
+        func = libc.gen_chain_char_cpy
+        func.restype = POINTER(RetOneDim)
+
+        start = time.time()
+        ret = func(pointer(data_words),
+                   c_int(len(data)),
+                   c_char(paras[0]),
+                   c_char(paras[1]),
+                   c_char(paras[2]),
+                   c_bool(paras[3]))
+        end = time.time()
+
+        for i in range(ret.contents.dataNum):
+            out.append(ret.contents.dataList[i])
 
     runtime = end - start
+    print(start,end)
 
     ttk.Label(top, text="This calculation took %.2f s" % runtime, anchor="center",
               font=("Times New Roman", 15, "bold")).place(

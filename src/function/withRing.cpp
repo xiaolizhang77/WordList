@@ -253,10 +253,12 @@ void searchUseInApi(char **word, int wordNum, char para_h, char para_t, char par
         }
     }
 
-    *lastPoint = max_point;
+    lastPoint = &max_point;
+
     *max = max_len;
 
-    charPoint *mmm[100];
+    printf("112");
+    charPoint *mmm[10000];
     int i = 0;
     charPoint *p = max_point;
     while (p != nullptr) {

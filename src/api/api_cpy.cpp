@@ -3,6 +3,7 @@
 //
 
 #include "api.h"
+#include "../function/function.h"
 #include "vector"
 #include "string"
 
@@ -14,8 +15,8 @@ struct cpyRetOneDim {
 };
 
 struct cpyRetTwoDim {
-    const char *dataList[1000][1000];
-    int dataNumOne[1000];
+    const char *dataList[10000][1000];
+    int dataNumOne[10000];
     int dataNumTwo;
 };
 
@@ -39,6 +40,8 @@ extern "C" __declspec(dllexport)
 cpyRetOneDim *gen_chain_word_cpy(char **words, int len, char head, char tail, char reject, bool en_loop) {
     vector<string> result;
     auto *retResult = (cpyRetOneDim *) malloc(sizeof(cpyRetOneDim));
+//    int n;
+//    char** w=readWordsFromFile("input.txt",&n);
     int size = gen_chain_word(words, len, result, head, tail, reject, en_loop);
     retResult->dataNum = size;
     for (int i = 0; i < size; i++) {
@@ -52,7 +55,7 @@ cpyRetOneDim *gen_chain_char_cpy(char **words, int len, char head, char tail, ch
     vector<string> result;
     auto *retResult = (cpyRetOneDim *) malloc(sizeof(cpyRetOneDim));
     int size = gen_chain_char(words, len, result, head, tail, reject, en_loop);
-    retResult->dataNum = size;
+    retResult->dataNum = result.size();
     for (int i = 0; i < size; i++) {
         retResult->dataList[i] = result[i].c_str();
     }
