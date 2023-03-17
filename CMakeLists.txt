@@ -17,6 +17,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 #include_directories(src src/api src/function src/output src/exceptions)
 
 ADD_SUBDIRECTORY(src)
+# 添加test子目录
+ADD_SUBDIRECTORY(test)
 
 #add_library(api_api SHARED
 #        src/api/api.cpp
