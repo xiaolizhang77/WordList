@@ -15,7 +15,7 @@ struct cpyRetOneDim {
 };
 
 struct cpyRetTwoDim {
-    const char *dataList[10000][1000];
+    const char *dataList[10000][10000];
     int dataNumOne[10000];
     int dataNumTwo;
 };

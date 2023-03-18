@@ -12,15 +12,15 @@ from ctypes import *
 
 class RetTwoDim(Structure):
     _fields_ = [
-        ('dataList', (c_char_p * 1000) * 1000),
-        ('dataNumOne', c_int * 1000),
+        ('dataList', (c_char_p * 10000) * 10000),
+        ('dataNumOne', c_int * 10000),
         ('dataNumTwo', c_int)
     ]
 
 
 class RetOneDim(Structure):
     _fields_ = [
-        ('dataList', c_char_p * 1000),
+        ('dataList', c_char_p * 10000),
         ('dataNum', c_int)
     ]
 
