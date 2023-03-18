@@ -274,9 +274,86 @@ Additional parameter content can only be one letter.
 
 ### 11 界面模块的详细设计过程
 
-​		我们使用`Python`语言中的`Tkinter`库作为基础组件库，并使用`Ttkbootstrap`库进行美化设计。我们将界面分成几个基础功能区，使用`Frame`组件，使其看起来简洁突出。我们使用`Tkinter`中的`Text`和`FileDialog`功能来获取数据并实现数据的导入，并且使用`Toplevel`组件来打印输出结果，并将结果保存。整个过程中，我注重设计的细节和用户体验，确保整个应用程序的流畅性和易用性。
+​		我们使用`Python`语言中的`Tkinter`库作为基础组件库，并使用`Ttkbootstrap`库进行美化设计。我们将界面分成几个基础功能区，使用`Frame`组件，使其看起来简洁突出。我们使用`Tkinter`中的`Text`和`FileDialog`功能来获取数据并实现数据的导入，并且使用`Toplevel`组件来打印输出结果，并将结果保存。整个过程中，我们注重设计的细节和用户体验，确保整个应用程序的流畅性和易用性。
 
 ### 12 界面模块与计算模块的对接
+
+我们采用了`ctypes`库来导入我们的计算模块，为了解决数据的传入传出问题，我们在原先`api`的基础上对其进行了进一步包装。
+
+- Python端
+
+  我们基于`ctypes.Structure`类，定义了两个结构体来接受计算模块的返回值。
+
+  ```python
+  from ctypes import *
+  
+  class RetTwoDim(Structure):
+      _fields_ = [
+          ('dataList', (c_char_p * 10000) * 10000),
+          ('dataNumOne', c_int * 10000),
+          ('dataNumTwo', c_int)
+      ]
+  
+  
+  class RetOneDim(Structure):
+      _fields_ = [
+          ('dataList', c_char_p * 10000),
+          ('dataNum', c_int)
+      ]
+  ```
+
+  之后，我们通过`ctypes.windll`方法导入动态链接库，并调用我们实现的`api`接口函数。
+
+  ```
+  from ctypes import *
+  
+  libc = windll.LoadLibrary("xxx")
+  func = libc.xxx
+  ```
+
+- C++端
+
+  由于C++中`vector`的问题，我们在原先`api`的基础上再次进行了包装，创建了`api_cpy.cpp`文件。（下面是部分内容）
+
+  结构体定义：
+
+  ```c++
+  struct cpyRetOneDim {
+      const char *dataList[10000];
+      int dataNum;
+  };
+  
+  struct cpyRetTwoDim {
+      const char *dataList[10000][10000];
+      int dataNumOne[10000];
+      int dataNumTwo;
+  };
+  ```
+
+  `api`函数：
+
+  ```c++
+  extern "C" __declspec(dllexport)
+  cpyRetTwoDim *gen_chains_all_cpy(char **words, int len) {
+      vector<vector<string>> result;
+      auto *retResult = (cpyRetTwoDim *) malloc(sizeof(cpyRetTwoDim));
+      int size = gen_chains_all(words, len, result);
+      retResult->dataNumTwo = size;
+      for (int i = 0; i < size; i++) {
+          retResult->dataNumOne[i] = result[i].size();
+          for (int j = 0; j < result[i].size(); j++) {
+              retResult->dataList[i][j] = result[i][j].c_str();
+          }
+      }
+      return retResult;
+  }
+  ```
+
+实现界面：
+
+![image-20230318171536684](D:\DUALPRO\WordList\images\image-20230318171536684.png)
+
+![image-20230318171511504](D:\DUALPRO\WordList\images\image-20230318171511504.png)
 
 
 
