@@ -17,7 +17,7 @@ const char *incompatible_parameter::what() {
 }
 
 const char *single_additional_parameter::what() {
-    return "Additional parameters cannot exist on their own.";
+    return "Additional parameters cannot exist alone.";
 }
 
 const char *repeat_parameter::what() {
@@ -25,7 +25,7 @@ const char *repeat_parameter::what() {
 }
 
 const char *format_filename::what() {
-    return "The file name format is incorrect.";
+    return "The filename format is incorrect.";
 }
 
 const char *none_exist_file::what() {

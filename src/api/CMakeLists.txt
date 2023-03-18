@@ -1,5 +1,7 @@
 AUX_SOURCE_DIRECTORY(. DIR_API_SRCS)
-ADD_LIBRARY(api ${DIR_API_SRCS})
+ADD_LIBRARY(api SHARED ${DIR_API_SRCS})
+
+target_link_libraries(api exceptions output function)
 
 #ADD_LIBRARY(api SHARED ${DIR_API_SRCS}
 #                ../function/func.cpp

@@ -175,12 +175,18 @@ Design by Contract（契约式设计）是一种软件开发方法，它强调�
 
 ### 10 异常处理
 
-​	`unknown_parameter` 异常类：用于处理存在未知参数的情况。当用户输入了一个未知的参数时，该异常会被抛出。
+​	`unknown_parameter` 异常类：用于处理存在未知参数的情况。当用户输入的参数中存在一个或多个未知的参数时，该异常会被抛出。
 
 ​	单元测试样例：
 
 ```
+# 输入参数
+-n input.txt -m -a
 
+# 期望结果
+xxx\word_list.exe: unknown option -- m
+xxx\word_list.exe: unknown option -- a
+There are unknown parameters.
 ```
 
 ​	`none_parameter` 异常类：用于处理没有参数的情况。当用户没有输入任何参数时，该异常会被抛出。
@@ -188,23 +194,34 @@ Design by Contract（契约式设计）是一种软件开发方法，它强调�
 ​	单元测试样例：
 
 ```
+# 输入参数（空）
 
+# 期望结果
+There are no parameters.
 ```
 
-​	`incompatible_parameter` 异常类：用于处理不兼容的参数。当用户输入的参数不兼容时，该异常会被抛出。
+​	`incompatible_parameter` 异常类：用于处理不兼容的参数。当用户输入的参数不兼容时，例如同时包括`-n`和`-w`参数时，该异常会被抛出。
 
 ​	单元测试样例：
 
 ```
+# 输入参数
+-n input.txt -w input.txt
 
+# 期望结果
+The parameters are not compatible.
 ```
 
-​	`single_additional_parameter` 异常类：用于处理单个附加参数的情况。当用户只输入了一个附加参数时，该异常会被抛出。
+​	`single_additional_parameter` 异常类：用于处理只包含附加参数的情况。当用户只输入一个或多个附加参数，而没有输入功能性参数时，该异常会被抛出。
 
 ​	单元测试样例：
 
 ```
+# 输入参数
+-h a -t m
 
+# 期望结果
+Additional parameters cannot exist alone.
 ```
 
 ​	`repeat_parameter` 异常类：用于处理重复参数的情况。当用户输入了重复的参数时，该异常会被抛出。
@@ -212,15 +229,23 @@ Design by Contract（契约式设计）是一种软件开发方法，它强调�
 ​	单元测试样例：
 
 ```
+# 输入参数
+-n input.txt -rr
 
+# 期望结果
+Duplicate parameters.
 ```
 
-​	`format_filename` 异常类：用于处理文件名格式不正确的情况。当用户输入的文件名格式不正确时，该异常会被抛出。
+​	`format_filename` 异常类：用于处理文件名格式不正确的情况。当用户输入的文件名格式不正确时（例如输入文件不是以`.txt`结尾），该异常会被抛出。
 
 ​	单元测试样例：
 
 ```
+# 输入参数
+-n input.docx
 
+# 期望结果
+The filename format is incorrect.
 ```
 
 ​	`none_exist_file` 异常类：用于处理文件不存在的情况。当用户输入的文件名不存在时，该异常会被抛出。
@@ -228,22 +253,107 @@ Design by Contract（契约式设计）是一种软件开发方法，它强调�
 ​	单元测试样例：
 
 ```
+# 输入参数（文件不存在）
+-n input.txt
 
+# 期望结果
+The file does not exist.
 ```
 
-​	`format_parameter_content` 异常类：用于处理附加参数内容格式不正确的情况。当用户输入的附加参数内容不符合规定的格式时，该异常会被抛出。
+​	`format_parameter_content` 异常类：用于处理附加参数内容格式不正确的情况。当用户输入的附加参数内容不符合规定的格式时（如`-h`参数内容包括多个字母），该异常会被抛出。
 
 ​	单元测试样例：
 
 ```
+# 输入参数（文件不存在）
+-n input.txt -h ab
 
+# 期望结果
+Additional parameter content can only be one letter.
 ```
 
 ### 11 界面模块的详细设计过程
 
-​		我们使用`Python`语言中的`Tkinter`库作为基础组件库，并使用`Ttkbootstrap`库进行美化设计。我们将界面分成几个基础功能区，使用`Frame`组件，使其看起来简洁突出。我们使用`Tkinter`中的`Text`和`FileDialog`功能来获取数据并实现数据的导入，并且使用`Toplevel`组件来打印输出结果，并将结果保存。整个过程中，我注重设计的细节和用户体验，确保整个应用程序的流畅性和易用性。
+​		我们使用`Python`语言中的`Tkinter`库作为基础组件库，并使用`Ttkbootstrap`库进行美化设计。我们将界面分成几个基础功能区，使用`Frame`组件，使其看起来简洁突出。我们使用`Tkinter`中的`Text`和`FileDialog`功能来获取数据并实现数据的导入，并且使用`Toplevel`组件来打印输出结果，并将结果保存。整个过程中，我们注重设计的细节和用户体验，确保整个应用程序的流畅性和易用性。
 
 ### 12 界面模块与计算模块的对接
+
+我们采用了`ctypes`库来导入我们的计算模块，为了解决数据的传入传出问题，我们在原先`api`的基础上对其进行了进一步包装。
+
+- Python端
+
+  我们基于`ctypes.Structure`类，定义了两个结构体来接受计算模块的返回值。
+
+  ```python
+  from ctypes import *
+  
+  class RetTwoDim(Structure):
+      _fields_ = [
+          ('dataList', (c_char_p * 10000) * 10000),
+          ('dataNumOne', c_int * 10000),
+          ('dataNumTwo', c_int)
+      ]
+  
+  
+  class RetOneDim(Structure):
+      _fields_ = [
+          ('dataList', c_char_p * 10000),
+          ('dataNum', c_int)
+      ]
+  ```
+
+  之后，我们通过`ctypes.windll`方法导入动态链接库，并调用我们实现的`api`接口函数。
+
+  ```
+  from ctypes import *
+  
+  libc = windll.LoadLibrary("xxx")
+  func = libc.xxx
+  ```
+
+- C++端
+
+  由于C++中`vector`的问题，我们在原先`api`的基础上再次进行了包装，创建了`api_cpy.cpp`文件。（下面是部分内容）
+
+  结构体定义：
+
+  ```c++
+  struct cpyRetOneDim {
+      const char *dataList[10000];
+      int dataNum;
+  };
+  
+  struct cpyRetTwoDim {
+      const char *dataList[10000][10000];
+      int dataNumOne[10000];
+      int dataNumTwo;
+  };
+  ```
+
+  `api`函数：
+
+  ```c++
+  extern "C" __declspec(dllexport)
+  cpyRetTwoDim *gen_chains_all_cpy(char **words, int len) {
+      vector<vector<string>> result;
+      auto *retResult = (cpyRetTwoDim *) malloc(sizeof(cpyRetTwoDim));
+      int size = gen_chains_all(words, len, result);
+      retResult->dataNumTwo = size;
+      for (int i = 0; i < size; i++) {
+          retResult->dataNumOne[i] = result[i].size();
+          for (int j = 0; j < result[i].size(); j++) {
+              retResult->dataList[i][j] = result[i][j].c_str();
+          }
+      }
+      return retResult;
+  }
+  ```
+
+实现界面：
+
+![image-20230318171536684](D:\DUALPRO\WordList\images\image-20230318171536684.png)
+
+![image-20230318171511504](D:\DUALPRO\WordList\images\image-20230318171511504.png)
 
 
 
