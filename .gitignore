@@ -1,5 +1,6 @@
 # cmake build文件
 cmake-build-debug/
+cmake-build-debug-mingw/
 
 .idea
 

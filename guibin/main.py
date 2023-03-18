@@ -1,4 +1,3 @@
-import ctypes
 import time
 from tkinter import filedialog
 from tkinter import messagebox
@@ -9,20 +8,14 @@ from ttkbootstrap.constants import *
 import tkinter as tk
 
 from ctypes import *
+import win32api
 
 
-class RetTwoDim(Structure):
+class Ret(Structure):
     _fields_ = [
-        ('dataList', (c_char_p * 2000) * 1000),
-        ('dataNumOne', c_int * 2000),
-        ('dataNumTwo', c_int)
-    ]
-
-
-class RetOneDim(Structure):
-    _fields_ = [
-        ('dataList', c_char_p * 2000),
-        ('dataNum', c_int)
+        ('dataList', c_char_p * 20000),
+        ('dataNum', c_int),
+        ('dataRes', c_int)
     ]
 
 
@@ -292,31 +285,27 @@ def startCalculate(win):
     else:
         paras.append(True)
 
-    libc = windll.LoadLibrary("D:\\DUALPRO\\WordList\\bin\\libapi.dll")
+    libc = cdll.LoadLibrary("D:\\DUALPRO\\WordList\\bin\\libword_list.dll")
 
     out = []
     start = time.time()
     if eParaChoose.get() == "-n":
 
         func = libc.gen_chains_all_cpy
-        func.restype = POINTER(RetTwoDim)
+        func.restype = POINTER(Ret)
 
         ret = func(pointer(data_words), c_int(len(data)))
 
-        out.append(str(ret.contents.dataNumTwo))
+        out.append(str(ret.contents.dataRes))
 
-        for i in range(ret.contents.dataNumTwo):
-            out_s = ""
-            for j in range(ret.contents.dataNumOne[i]):
-                out_s += ret.contents.dataList[i][j]
-            out.append(out_s)
+        for i in range(ret.contents.dataNum):
+            out.append(ret.contents.dataList[i])
 
-        pass
-
+        win32api.FreeLibrary(libc._handle)
 
     elif eParaChoose.get() == "-w":
         func = libc.gen_chain_word_cpy
-        func.restype = POINTER(RetOneDim)
+        func.restype = POINTER(Ret)
 
         ret = func(pointer(data_words),
                    c_int(len(data)),
@@ -325,17 +314,18 @@ def startCalculate(win):
                    c_char(paras[2]),
                    c_bool(paras[3]))
 
-        out.append(str(ret.contents.result))
+        out.append(str(ret.contents.dataRes))
 
         for i in range(ret.contents.dataNum):
             out.append(ret.contents.dataList[i])
 
-        print(ret.contents.dataNum)
+        # print(ret.contents.dataNum)
+        win32api.FreeLibrary(libc._handle)
 
 
     elif eParaChoose.get() == "-c":
         func = libc.gen_chain_char_cpy
-        func.restype = POINTER(RetOneDim)
+        func.restype = POINTER(Ret)
 
         ret = func(pointer(data_words),
                    c_int(len(data)),
@@ -344,10 +334,12 @@ def startCalculate(win):
                    c_char(paras[2]),
                    c_bool(paras[3]))
 
-        out.append(str(ret.contents.result))
+        out.append(str(ret.contents.dataRes))
 
         for i in range(ret.contents.dataNum):
             out.append(ret.contents.dataList[i])
+
+        win32api.FreeLibrary(libc._handle)
 
     end = time.time()
 

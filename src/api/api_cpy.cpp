@@ -10,63 +10,51 @@
 
 using namespace std;
 
-struct cpyRetOneDim {
-    char *dataList[2000];
+struct cpyRet {
+    char *dataList[20000];
     int dataNum;
-    int result;
-};
-
-struct cpyRetTwoDim {
-    char *dataList[2000][1000];
-    int dataNumOne[2000];
-    int dataNumTwo;
+    int dataRes;
 };
 
 extern "C" __declspec(dllexport)
-cpyRetTwoDim *gen_chains_all_cpy(char **words, int len) {
+cpyRet *gen_chains_all_cpy(char **words, int len) {
     vector<vector<string>> result;
-    auto *retResult = (cpyRetTwoDim *) malloc(sizeof(cpyRetTwoDim));
+    auto *retResult = (cpyRet *) malloc(sizeof(cpyRet));
     int size = gen_chains_all(words, len, result);
-    retResult->dataNumTwo = size;
+    retResult->dataRes = size;
+
     for (int i = 0; i < size; i++) {
-        retResult->dataNumOne[i] = result[i].size();
-        for (int j = 0; j < result[i].size(); j++) {
-//            retResult->dataList[i][j] = result[i][j].c_str();
-            strcpy(retResult->dataList[i][j], result[i][j].c_str());
+        string string1;
+        for (auto &j: result[i]) {
+            string1 += j + " ";
         }
+        retResult->dataList[i] = (char *) string1.c_str();
     }
     return retResult;
 }
 
 
 extern "C" __declspec(dllexport)
-cpyRetOneDim *
+cpyRet *
 gen_chain_word_cpy(char **words, int len, char head, char tail, char reject, bool en_loop) {
     vector<string> result;
-    auto *retResult = (cpyRetOneDim *) malloc(sizeof(cpyRetOneDim));
+    auto *retResult = (cpyRet *) malloc(sizeof(cpyRet));
     int size = gen_chain_word(words, len, result, head, tail, reject, en_loop);
     retResult->dataNum = result.size();
-    retResult->result = size;
+    retResult->dataRes = size;
     for (int i = 0; i < size; i++) {
         retResult->dataList[i] = (char *) result[i].c_str();
     }
-
-//    auto *retResult = (cpyRetOneDim *) malloc(sizeof(cpyRetOneDim));
-//    for (int i = 0; i < len; i++) {
-//        retResult->dataList[i] = *(words + i);
-//    }
-//    retResult->dataNum = len;
-//    retResult->result = len;
     return retResult;
 }
 
 extern "C" __declspec(dllexport)
-cpyRetOneDim *gen_chain_char_cpy(char **words, int len, char head, char tail, char reject, bool en_loop) {
+cpyRet *gen_chain_char_cpy(char **words, int len, char head, char tail, char reject, bool en_loop) {
     vector<string> result;
-    auto *retResult = (cpyRetOneDim *) malloc(sizeof(cpyRetOneDim));
+    auto *retResult = (cpyRet *) malloc(sizeof(cpyRet));
     int size = gen_chain_char(words, len, result, head, tail, reject, en_loop);
     retResult->dataNum = result.size();
-    retResult->result = size;
+    retResult->dataRes = size;
     for (int i = 0; i < size; i++) {
         retResult->dataList[i] = (char *) result[i].c_str();
     }
