@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
         }
 
         if ((para_h != 0 && para_h_arg.length() != 1) || (para_t != 0 && para_t_arg.length() != 1) ||
-            (para_j != 0 && para_j_arg.length() != 0)) {
+            (para_j != 0 && para_j_arg.length() != 1)) {
             throw format_parameter_content();
         }
     } catch (none_parameter &e) {
@@ -130,22 +130,24 @@ int main(int argc, char *argv[]) {
         vector<vector<string>> result;
         int size;
         size = gen_chains_all(words, nWord, result);
-        output(size,result);
+        output(size, result);
     } else if (para_w != 0) {
         vector<string> result;
         int size;
         bool en_loop = para_r != 0;
-        size = gen_chain_word(words, nWord, result, para_h_arg[0], para_t_arg[0], para_j_arg[0],
+        size = gen_chain_word(words, nWord, result, tolower(para_h_arg[0]), tolower(para_t_arg[0]),
+                              tolower(para_j_arg[0]),
                               en_loop);
-        output(size,result);
+        output(size, result);
 
-    }else if(para_c!=0){
+    } else if (para_c != 0) {
         vector<string> result;
         int size;
         bool en_loop = para_r != 0;
-        size = gen_chain_char(words, nWord, result, para_h_arg[0], para_t_arg[0], para_j_arg[0],
+        size = gen_chain_char(words, nWord, result, tolower(para_h_arg[0]), tolower(para_t_arg[0]),
+                              tolower(para_j_arg[0]),
                               en_loop);
-        output(size,result);
+        output(size, result);
     }
 
     return 0;
