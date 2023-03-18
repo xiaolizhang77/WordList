@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
             throw format_parameter_content();
         }
     } catch (none_parameter &e) {
-        std::cout << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
         exit(-1);
     }
     catch (unknown_parameter &e) {
@@ -115,7 +115,6 @@ int main(int argc, char *argv[]) {
         std::cerr << e.what() << std::endl;
         exit(-1);
     } catch (none_exist_file &e) {
-        std::cerr << f_road << std::endl;
         std::cerr << e.what() << std::endl;
         exit(-1);
     } catch (format_parameter_content &e) {
