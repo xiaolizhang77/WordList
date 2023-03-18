@@ -37,6 +37,7 @@ ADD_SUBDIRECTORY(test)
 
 add_library(MyLibrary SHARED
         src/api/api.cpp
+        src/api/api_cpy.cpp
         src/exceptions/exceptions.cpp
         src/output/output.cpp
         src/function/func.cpp
