@@ -9,10 +9,12 @@ int output(int size, vector<vector<string>> &result) {
     fp = fopen("solution.txt", "w");
     fprintf(fp, "%d\n", size);
     for (int i = 0; i < size; i++) {
-        for (int j = 0; j < result[i].size(); i++) {
-            fprintf(fp, "%s ", result[i][j].c_str());
+        for (auto & j : result[i]) {
+            fprintf(fp, "%s ", j.c_str());
+//            printf("%s ", result[i][j].c_str());
         }
         fprintf(fp, "\n");
+//        printf(" \n");
     }
     fclose(fp);
     return 1;

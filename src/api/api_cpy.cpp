@@ -16,19 +16,26 @@ struct cpyRet {
     int dataRes;
 };
 
+struct cpyRetTwo {
+    char *dataList[20000][1000];
+    int dataNumOne[20000];
+    int dataNumTwo;
+    int dataRes;
+};
+
 extern "C" __declspec(dllexport)
-cpyRet *gen_chains_all_cpy(char **words, int len) {
+cpyRetTwo *gen_chains_all_cpy(char **words, int len) {
     vector<vector<string>> result;
-    auto *retResult = (cpyRet *) malloc(sizeof(cpyRet));
+    auto *retResult = (cpyRetTwo *) malloc(sizeof(cpyRetTwo));
     int size = gen_chains_all(words, len, result);
+    retResult->dataNumTwo = result.size();
     retResult->dataRes = size;
 
     for (int i = 0; i < size; i++) {
-        string string1;
-        for (auto &j: result[i]) {
-            string1 += j + " ";
+        for (int j = 0; j < result[i].size(); j++) {
+            retResult->dataList[i][j] = (char *) result[i][j].c_str();
         }
-        retResult->dataList[i] = (char *) string1.c_str();
+        retResult->dataNumOne[i] = result[i].size();
     }
     return retResult;
 }

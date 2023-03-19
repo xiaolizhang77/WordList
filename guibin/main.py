@@ -19,6 +19,15 @@ class Ret(Structure):
     ]
 
 
+class RetTwo(Structure):
+    _fields_ = [
+        ('dataList', (c_char_p * 1000) * 20000),
+        ('dataNumOne', c_int * 20000),
+        ('dataNumTwo', c_int),
+        ('dataRes', c_int)
+    ]
+
+
 root = ttk.Window()
 root.title("WordList")
 sw = root.winfo_screenwidth()
@@ -292,14 +301,17 @@ def startCalculate(win):
     if eParaChoose.get() == "-n":
 
         func = libc.gen_chains_all_cpy
-        func.restype = POINTER(Ret)
+        func.restype = POINTER(RetTwo)
 
         ret = func(pointer(data_words), c_int(len(data)))
 
         out.append(str(ret.contents.dataRes))
 
-        for i in range(ret.contents.dataNum):
-            out.append(ret.contents.dataList[i])
+        for i in range(ret.contents.dataNumTwo):
+            ss = ""
+            for j in range(ret.contents.dataNumOne[i]):
+                ss += str(ret.contents.dataList[i][j], encoding='utf-8') + " "
+            out.append(ss)
 
         win32api.FreeLibrary(libc._handle)
 
