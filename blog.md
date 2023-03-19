@@ -155,7 +155,7 @@ Design by Contract（契约式设计）是一种软件开发方法，它强调�
 
 ### 9 测试
 
-#### 组内测试
+#### 文件结构
 
 ![image_1](images\image_1.png)
 
@@ -183,13 +183,82 @@ Design by Contract（契约式设计）是一种软件开发方法，它强调�
 
 ##### word_list.h
 
-​		这个文件定义了 `libword_list.dll` 的接口。它首先根据编译器设置导入导出宏，然后包含了所有需要的头文件和命名空间。接着，它声明了 `libword_list.dll` 中导出的函数，如 `gen_chains_all`, `gen_chain_word`, `gen_chain_char`。最后，它声明了 `readWordsFromFile` 函数的原型。
+​		这个文件定义了 `libword_list.dll` 的接口。它首先根据编译器设置导入导出宏，然后包含了所有需要的头文件和命名空间。接着，它声明了 `libword_list.dll` 中导出的函数，如 `gen_chains_all`, `gen_chain_word`, `gen_chain_char`。
 
-##### readWordFromFile.cpp
+#### 测试架构
 
-​		这个文件实现了 `readWordsFromFile` 函数，它从指定的文件中读取单词，并返回一个包含所有单词的字符串数组。这个函数在测试主程序中被调用，用于从 "test.txt" 文件中读取单词。
+我们采用`googletest`工具对我们的代码进行测试，以下是实现思路：
 
-​		整个测试过程是通过编译并运行 `wordlist_test` 可执行文件来完成的。当运行该可执行文件时，它会调用 `libword_list.dll` 中的相关函数，测试其功能是否符合预期。
+1. 在CMakeLists.txt中，包含googletest的头文件和库文件路径。
+
+   ```
+   bashCopy codeinclude_directories(${CMAKE_SOURCE_DIR}/lib/googletest/include)
+   link_directories(${CMAKE_SOURCE_DIR}/lib/googletest/cmake-build-debug/lib)
+   ```
+
+2. 在CMakeLists.txt中，添加`test`子目录，这将包含测试代码。
+
+   ```
+   scssCopy code
+   ADD_SUBDIRECTORY(test)
+   ```
+
+3. 在`test`目录中，创建测试源文件`test_wordlist.cpp`和头文件`word_list.h`。在`test_wordlist.cpp`中，编写针对项目功能的测试用例。
+
+4. 在CMakeLists.txt中，添加测试源文件到一个变量中。
+
+   ```
+   bashCopy codeset(TEST_SOURCES
+       test/test_wordlist.cpp
+       test/word_list.h
+   )
+   ```
+
+5. 在CMakeLists.txt中，添加一个可执行的测试目标`word_list_test`，并将测试源文件作为参数。
+
+   ```
+   scssCopy code
+   add_executable(word_list_test ./test/test_wordlist.cpp)
+   ```
+
+6. 链接项目中的库以及`googletest`的库到测试目标`word_list_test`。
+
+   ```
+   scssCopy codetarget_link_libraries(word_list_test MyLibrary)
+   target_link_libraries(word_list_test gtest gtest_main)
+   ```
+
+7. 编译项目时，将同时编译测试代码。在编译完成后，可以运行`word_list_test`可执行文件，以运行针对项目功能的测试用例。
+
+#### 测试用例
+
+我们使用两种方式产生测试用例，并且将测试样例分为有环和无环，以下是部分测试样例：
+
+1.手搓无环样例：
+
+```
+"uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuv","uuuuv","uuv","vw","wx","xy","yz","yy","aaaaab","aab","bbbbbbc","cccg","cccd","dg","yz","yy","aaaaab","aab","bbbbbbc","cccg","cccd","dg","yz","yy","aaaaab","aab","bbbbbbc","cccg","cccd","dg","gggggj","hi","ij","jm","mn","opq","opq","opq","opq","opq","op","oo","bb"
+```
+
+2.自动生成无环样例：
+
+```
+"mampikdfgfdazsi", "nyqaffouyi", "ftcmodfvab", "ysadyjbqjn", "ytofdatiic", "ucbbpgldjt", "rpvcjfifda","yzaspfqqhl", "rjzbyezhri", "tcbvwvlcsdfdfdfsdfsdfghjksdfghjklsdfghjklmk", "rmobyrfzad", "cgbuxirxka", "qzkfztenzl", "xnmwvbptte","kwnjsdfsrpwmi", "kchpcaamde", "vvwrkckcyg", "xywwslplun", "xnghndhace", "seeqprvqao", "wtbrjfujid","zftjdfdzcbwva", "xjsbrklhod", "lgmpnndykj", "oselbndknc", "pjsxolpfwi", "karyajsnmi", "tyxrtjsfgr","womlfmmbtu", "qtqajuhmqa", "zmdojgvkbc", "lddwlzpisb", "zwvdqcdjqw", "xbppktxwaw", "wlhjmusfzk","wgktdyjmjg", "jbwmsdfejcjkb", "udksdfoollyxk", "rfipdfuqfj", "ztwqjdqzgm", "udmjcehedc", "tysjpkyczo","vdbntdfrba", "spbcnyibpd", "xqldhshojo", "ketesrwljj", "sjazrwsuah", "qzxaqeqwxp", "kscdthxkpb", "ztmsdfprhtmks", "ynvqpuggfd", "ryynaozysl", "miwhzzvxof", "nblgqayowf", "thqsrqhcqa", "eiiucfhbyd","uovoiyglec", "iuufqbjsdfpzg", "sgpagbnvmk", "qvhumtzvqg", "ydsvqlhmrm", "lgfopmnkma", "qvdemjdlkn","ecrcrbtfia", "zfvdfgyhahth", "nisdfswonbcbf", "pqzygcqhif", "zhkppannvn", "ollnjzjssj", "jpgkdxrtcc","zezjjmfrsdzi", "zskilnqcfi", "niimmanhei", "wucmghusku", "odsoyfdrwa", "pobfgkkmti", "zmnvvgfnvo","mewwesdfylnjg", "yanypvwemb", "ytgysdfypxpcn", "rkquecuruj", "kxigidiwuj", "wquaychqea", "tlclyiknac","yxefklbnys", "ffwiyfrgpb", "xfnvbqpsdftjutcr", "ttwfzntpzl", "nxvszgwlbj", "zonaraujbc", "tihbhnfrbb", "tnjaegslsc", "ruskfsdfubaaq"
+```
+
+3.手搓有环样例：
+
+```
+"uuuuv","vw","wx","xy","yz","yy","aaaaab","aab","bbbbbbc","cccg","cccd","dg","gggggj","hi","ij","jm","mn","opq","op","oo","bb","za","ga","gb","sb","lj","ssl","somethings"
+```
+
+考虑到自动生成无环样例较为困难，`python`源码放置在项目`test`文件夹中。
+
+#### 测试覆盖率
+
+以下是核心代码的测试覆盖率，因为编译器会插入一些分支代码防止空指针访问等错误行为，这些分支一执行程序就`shut down`了，但是`gtest`在汇编的层面认不出来这些代码是我们的还是编译器加的。因此，`func.cpp`和`task1.cpp`两个文件的分支覆盖率不是很理想。尽管如此，我们的分支覆盖率平均也是远超`90%`，代码覆盖率接近`100%`。
+
+![image_2](D:\desktop\wordList2\images\image_2.png)
 
 ### 10 异常处理
 
