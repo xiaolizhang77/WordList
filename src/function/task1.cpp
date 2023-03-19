@@ -53,7 +53,7 @@ void print(char **s, int n, FILE *fp, vector<vector<string>> &allChain) {
         chain.emplace_back(s[i]);
 //        fprintf(fp, "%s ", s[i]);
     }
-    fprintf(fp, "\n");
+//    fprintf(fp, "\n");
     allChain.push_back(chain);
 }
 
@@ -165,7 +165,7 @@ void function1(char **words, const int *nword, char notAppear, char first, char 
             c[i] = p[i];
         }
         if ((first == '\0' || (c[0] + 'a' == first)) && (last == '\0' || (c[0] + 'a' == last))) {
-            print_word_chain(word_list, c, p.size(), fp, chain);
+            print_word_chain(word_list, c, (int) p.size(), fp, chain);
         }
     }
 //    fclose(fp);
