@@ -363,6 +363,37 @@ Additional parameter content can only be one letter.
 
 ​		我们使用`Python`语言中的`Tkinter`库作为基础组件库，并使用`Ttkbootstrap`库进行美化设计。我们将界面分成几个基础功能区，使用`Frame`组件，使其看起来简洁突出。我们使用`Tkinter`中的`Text`和`FileDialog`功能来获取数据并实现数据的导入，并且使用`Toplevel`组件来打印输出结果，并将结果保存。整个过程中，我们注重设计的细节和用户体验，确保整个应用程序的流畅性和易用性。
 
+下面是部分代码：
+
+```python
+...
+
+dataFrame = ttk.LabelFrame(root, text="Import Data", labelanchor="n")
+dataFrame.place(relx=0, rely=0.12, relwidth=1, relheight=0.3)
+
+dataBFrame = ttk.Frame(dataFrame)
+dataBFrame.place(relx=0, rely=0, relwidth=0.3, relheight=1)
+
+dataHFrame = ttk.Frame(dataFrame, name="input")
+
+...
+
+dataFFrame = ttk.Frame(dataFrame, name="file")
+
+...
+
+paraFrame = ttk.LabelFrame(root, text="Choose Parameter", labelanchor="n")
+paraFrame.place(relx=0, rely=0.45, relwidth=1, relheight=0.25)
+
+eParaFrame = ttk.LabelFrame(paraFrame, text="essential parameter", style="secondary", labelanchor="n")
+eParaFrame.place(relx=0.01, rely=0, relwidth=0.485, relheight=0.95)
+
+aParaFrame = ttk.LabelFrame(paraFrame, text="additional parameter", style="secondary", labelanchor="n")
+aParaFrame.place(relx=0.505, rely=0, relwidth=0.485, relheight=0.95)
+```
+
+
+
 ### 12 界面模块与计算模块的对接
 
 我们采用了`ctypes`库来导入我们的计算模块，为了解决数据的传入传出问题，我们在原先`api`的基础上对其进行了进一步包装。
@@ -372,30 +403,35 @@ Additional parameter content can only be one letter.
   我们基于`ctypes.Structure`类，定义了两个结构体来接受计算模块的返回值。
 
   ```python
-  from ctypes import *
-  
-  class RetTwoDim(Structure):
+  class Ret(Structure):
       _fields_ = [
-          ('dataList', (c_char_p * 10000) * 10000),
-          ('dataNumOne', c_int * 10000),
-          ('dataNumTwo', c_int)
+          ('dataList', c_char_p * 20000),
+          ('dataNum', c_int),
+          ('dataRes', c_int)
       ]
   
   
-  class RetOneDim(Structure):
+  class RetTwo(Structure):
       _fields_ = [
-          ('dataList', c_char_p * 10000),
-          ('dataNum', c_int)
+          ('dataList', (c_char_p * 1000) * 20000),
+          ('dataNumOne', c_int * 20000),
+          ('dataNumTwo', c_int),
+          ('dataRes', c_int)
       ]
   ```
 
-  之后，我们通过`ctypes.windll`方法导入动态链接库，并调用我们实现的`api`接口函数。
+  之后，我们通过`ctypes.windll`方法导入动态链接库，并调用我们实现的`api`接口函数。调用结束后，通过`win32api`库来释放内存，防止内存泄露。
 
-  ```
+  ```python
   from ctypes import *
+  import win32api
   
   libc = windll.LoadLibrary("xxx")
   func = libc.xxx
+  
+  ...
+  
+  win32api.FreeLibrary(libc._handle)
   ```
 
 - C++端
@@ -405,33 +441,66 @@ Additional parameter content can only be one letter.
   结构体定义：
 
   ```c++
-  struct cpyRetOneDim {
-      const char *dataList[10000];
+  struct cpyRet {
+      char *dataList[20000];
       int dataNum;
+      int dataRes;
   };
   
-  struct cpyRetTwoDim {
-      const char *dataList[10000][10000];
-      int dataNumOne[10000];
+  struct cpyRetTwo {
+      char *dataList[20000][1000];
+      int dataNumOne[20000];
       int dataNumTwo;
+      int dataRes;
   };
   ```
 
   `api`函数：
-
+  
   ```c++
   extern "C" __declspec(dllexport)
-  cpyRetTwoDim *gen_chains_all_cpy(char **words, int len) {
+  cpyRetTwo *gen_chains_all_cpy(char **words, int len) {
       vector<vector<string>> result;
-      auto *retResult = (cpyRetTwoDim *) malloc(sizeof(cpyRetTwoDim));
+      auto *retResult = (cpyRetTwo *) malloc(sizeof(cpyRetTwo));
       int size = gen_chains_all(words, len, result);
-      retResult->dataNumTwo = size;
+      retResult->dataNumTwo = result.size();
+      retResult->dataRes = size;
+  
       for (int i = 0; i < size; i++) {
-          retResult->dataNumOne[i] = result[i].size();
           for (int j = 0; j < result[i].size(); j++) {
-              retResult->dataList[i][j] = result[i][j].c_str();
+              retResult->dataList[i][j] = (char *) result[i][j].c_str();
           }
+          retResult->dataNumOne[i] = result[i].size();
       }
+      return retResult;
+  }
+  
+  
+  extern "C" __declspec(dllexport)
+  cpyRet *
+  gen_chain_word_cpy(char **words, int len, char head, char tail, char reject, bool en_loop) {
+      vector<string> result;
+      auto *retResult = (cpyRet *) malloc(sizeof(cpyRet));
+      int size = gen_chain_word(words, len, result, head, tail, reject, en_loop);
+      retResult->dataNum = result.size();
+      retResult->dataRes = size;
+      for (int i = 0; i < size; i++) {
+          retResult->dataList[i] = (char *) result[i].c_str();
+      }
+      return retResult;
+  }
+  
+  extern "C" __declspec(dllexport)
+  cpyRet *gen_chain_char_cpy(char **words, int len, char head, char tail, char reject, bool en_loop) {
+      vector<string> result;
+      auto *retResult = (cpyRet *) malloc(sizeof(cpyRet));
+      int size = gen_chain_char(words, len, result, head, tail, reject, en_loop);
+      retResult->dataNum = result.size();
+      retResult->dataRes = size;
+      for (int i = 0; i < size; i++) {
+          retResult->dataList[i] = (char *) result[i].c_str();
+      }
+  
       return retResult;
   }
   ```
