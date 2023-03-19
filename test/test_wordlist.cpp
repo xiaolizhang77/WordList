@@ -6,6 +6,8 @@
 int main() {
     std::cout << "test start..." << std::endl;
 
+    FILE *fp;
+    fp = fopen("test_solution.txt", "w");
     // 从文件中读取字符串
     char *strings[100] = {
             "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuv",
@@ -57,6 +59,13 @@ int main() {
 
     vector<vector<string>> result;
     gen_chains_all(strings, n, result);
+    for (int i = 0; i < result.size(); i++) {
+        for (auto & j : result[i]) {
+            fprintf(fp, "%s ", j.c_str());
+        }
+        fprintf(fp, "\n");
+        printf(" \n");
+    }
 
     vector<string> result2;
     gen_chain_char(strings, n, result2, '\0', 'c', 'b', false);
