@@ -36,7 +36,7 @@ void longest_chain_char(int edge[26][26], int *length, char *nodes) {
 
     // 找到最长的链
     for (i = 0; i < 26; i++) {
-        printf("%d : l=%d p=%d\n", i, lengths[i], prevs[i]);
+        //printf("%d : l=%d p=%d\n", i, lengths[i], prevs[i]);
         if (lengths[i] > max_length) {
             max_length = lengths[i];
             max_idx = i;

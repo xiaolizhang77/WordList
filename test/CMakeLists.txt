@@ -5,7 +5,6 @@ set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 
 # 添加测试源文件
 set(TEST_SOURCES
-        readWordFromFile.cpp
         test_wordlist.cpp
         word_list.h
         )

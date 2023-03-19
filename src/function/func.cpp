@@ -88,17 +88,24 @@ void function3(char **words, const int *nword, char notAppear, char first, char 
         printf("only last\n");
         char c = 'a';
         int n;
-        int length;
+        int length = 0;
         int maxN = 0;
         int maxLength = 0;
         int *max = nullptr;
+        int finalAnswer[100];
         int answer[100];
+        for (i = 0; i < 100; i++) {
+            answer[i] = 0;
+        }
         for (; c <= 'z'; c++) {
             function3And4(edge, c, last, &n, answer, &length);
             if (length > maxLength) {
                 maxN = n;
-                max = answer;
+                max = finalAnswer;
                 maxLength = length;
+                for (i = 0; i < n; i++) {
+                    finalAnswer[i] = answer[i];
+                }
             }
         }
 
@@ -122,14 +129,18 @@ void function3(char **words, const int *nword, char notAppear, char first, char 
         int length;
         int maxN = 0;
         int maxLength = 0;
+        int finalAnswer[100];
         int *max = nullptr;
         int answer[100];
         for (; c <= 'z'; c++) {
             function3And4(edge, first, c, &n, answer, &length);
             if (length > maxLength) {
                 maxN = n;
-                max = answer;
+                max = finalAnswer;
                 maxLength = length;
+                for (i = 0; i < n; i++) {
+                    finalAnswer[i] = answer[i];
+                }
             }
         }
 
@@ -259,12 +270,16 @@ void function2(char **words, const int *nword, char notAppear, char first, char 
         int n;
         int maxN = 0;
         int *max = nullptr;
+        int finalAnswer[100];
         int answer[100];
         for (; c <= 'z'; c++) {
             function2And4(edge, c, last, &n, answer);
             if (n > maxN) {
                 maxN = n;
-                max = answer;
+                max = finalAnswer;
+                for (i = 0; i < n; i++) {
+                    finalAnswer[i] = answer[i];
+                }
             }
         }
 //        FILE *fp;
@@ -285,13 +300,17 @@ void function2(char **words, const int *nword, char notAppear, char first, char 
         char c = 'a';
         int n;
         int maxN = 0;
+        int finalAnswer[100];
         int *max = nullptr;
         int answer[100];
         for (; c <= 'z'; c++) {
             function2And4(edge, first, c, &n, answer);
             if (n > maxN) {
                 maxN = n;
-                max = answer;
+                max = finalAnswer;
+                for (i = 0; i < n; i++) {
+                    finalAnswer[i] = answer[i];
+                }
             }
         }
 //        FILE *fp;

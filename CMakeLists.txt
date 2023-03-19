@@ -1,3 +1,6 @@
+include_directories(${CMAKE_SOURCE_DIR}/lib/googletest/include)
+link_directories(${CMAKE_SOURCE_DIR}/lib/googletest/cmake-build-debug/lib)
+
 cmake_minimum_required(VERSION 3.23)
 project(WordList)
 #set(CMAKE_EXE_LINKER_FLAGS "-static")
@@ -41,7 +44,6 @@ add_library(MyLibrary SHARED
         src/exceptions/exceptions.cpp
         src/output/output.cpp
         src/function/func.cpp
-        src/function/hasCycle.cpp
         src/function/readWordFromFile.cpp
         src/function/tool.cpp
         src/function/task3.cpp
@@ -58,3 +60,26 @@ ADD_EXECUTABLE(word_list ./src/main.cpp)
 target_link_libraries(word_list api exceptions function output)
 
 target_link_libraries(word_list MyLibrary)
+
+
+
+
+################################
+
+# 添加测试源文件
+set(TEST_SOURCES
+        test/test_wordlist.cpp
+        test/word_list.h
+        )
+
+add_executable(word_list_test ./test/test_wordlist.cpp)
+
+target_link_libraries(word_list_test MyLibrary)
+
+target_link_libraries(word_list_test gtest gtest_main)
+
+##用于另一组对接
+## 连接jni库
+#find_package(JNI REQUIRED)
+#include_directories(${JNI_INCLUDE_DIRS})
+#link_libraries(${JNI_LIBRARIES})

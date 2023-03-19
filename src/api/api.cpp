@@ -6,6 +6,7 @@ using namespace std;
 
 __declspec(dllexport)
 int gen_chains_all(char *words[], int len, vector<vector<string>> &result) {
+    printf("gen_chains_all start\n");
     function1(words, &len, '\0', '\0', '\0', result);
     return result.size();
 }

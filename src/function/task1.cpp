@@ -42,7 +42,7 @@ void find_chain(int edge[26][26], vector<vector<int>> &allChain) {
     }
 }
 
-void print(char **s, int n, FILE *fp, vector<vector<string>> &allChain) {
+void print(char **s, int n, vector<vector<string>> &allChain) {
     if (n < 2) {
         return;
     }
@@ -57,47 +57,31 @@ void print(char **s, int n, FILE *fp, vector<vector<string>> &allChain) {
     allChain.push_back(chain);
 }
 
-void print_word(struct wordsList word_list[26][26], int *chain, int depth, int nWord, char **s, FILE *fp, int size,
+void print_word(struct wordsList word_list[26][26], int *chain, int depth, int nWord, char **s, int size,
                 bool first, vector<vector<string>> &allChain) {
     if (first) {
-        print_word(word_list, chain, depth, nWord, s, fp, size, false, allChain);
+        print_word(word_list, chain, depth, nWord, s, size, false, allChain);
         if ((word_list[chain[depth]][chain[depth]].headWord)->next != nullptr) {
             s[nWord] = (word_list[chain[depth]][chain[depth]].headWord)->next->s;
-            print_word(word_list, chain, depth, nWord + 1, s, fp, size, false, allChain);
+            print_word(word_list, chain, depth, nWord + 1, s, size, false, allChain);
         }
     } else {
         if (size <= depth + 1) {
-            print(s, nWord, fp, allChain);
+            print(s, nWord, allChain);
             return;
         }
         struct wordPoint *p = (word_list[chain[depth]][chain[depth + 1]].headWord);
         for (; p->next != nullptr; p = p->next) {
             s[nWord] = p->next->s;
-            print_word(word_list, chain, depth + 1, nWord + 1, s, fp, size, true, allChain);
+            print_word(word_list, chain, depth + 1, nWord + 1, s, size, true, allChain);
         }
     }
 }
 
 void
-print_word_chain(struct wordsList word_list[26][26], int *chain, int size, FILE *fp, vector<vector<string>> &allChain) {
+print_word_chain(struct wordsList word_list[26][26], int *chain, int size, vector<vector<string>> &allChain) {
     char *s[10000];
-    print_word(word_list, chain, 0, 0, s, fp, size, true, allChain);
-}
-
-void printN(char *path) {
-    string str = to_string(N) + "\n";
-
-    // 打开文件并读取内容
-    ifstream ifs(path);
-    string content((istreambuf_iterator<char>(ifs)), (istreambuf_iterator<char>()));
-    ifs.close();
-    cout << str;
-
-    // 将更改后的内容写回文件
-    ofstream ofs(path);
-    ofs << str;
-    ofs << content;
-    ofs.close();
+    print_word(word_list, chain, 0, 0, s, size, true, allChain);
 }
 
 /**
@@ -111,7 +95,7 @@ void printN(char *path) {
  */
 void function1(char **words, const int *nword, char notAppear, char first, char last, vector<vector<string>> &chain) {
     N = 0;
-    printf("function1 start\n");
+//    printf("function1 start\n");
     struct wordsList word_list[26][26];
     int i, j;
     struct wordPoint head[26][26];
@@ -130,9 +114,6 @@ void function1(char **words, const int *nword, char notAppear, char first, char 
         getFirstLastChar(words[i], &firstChar, &lastChar);
         if (notAppear == '\0' || firstChar != notAppear) {
             struct wordPoint *p = word_list[firstChar - 'a'][lastChar - 'a'].headWord;
-            for (; p->next != nullptr; p = p->next) {
-                printf("%s", p->s);
-            }
             word[i].s = words[i];
             word[i].next = nullptr;
             p->next = &(word[i]);
@@ -157,20 +138,17 @@ void function1(char **words, const int *nword, char notAppear, char first, char 
 
     vector<vector<int>> allChain;
     find_chain(edge, allChain);
-    FILE *fp = nullptr;
 //    fp = fopen("solution.txt", "w");
     for (const auto &p: allChain) {
         int c[26];
         for (i = 0; i < p.size(); i++) {
             c[i] = p[i];
         }
-        if ((first == '\0' || (c[0] + 'a' == first)) && (last == '\0' || (c[0] + 'a' == last))) {
-            print_word_chain(word_list, c, (int) p.size(), fp, chain);
-        }
+        print_word_chain(word_list, c, (int) p.size(), chain);
     }
 //    fclose(fp);
 //    printN("solution.txt");
-    printf("function1 end\n");
+ //   printf("function1 end\n");
 }
 
 #pragma clang diagnostic pop
