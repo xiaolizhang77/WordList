@@ -258,7 +258,7 @@ Design by Contract（契约式设计）是一种软件开发方法，它强调�
 
 以下是核心代码的测试覆盖率，因为编译器会插入一些分支代码防止空指针访问等错误行为，这些分支一执行程序就`shut down`了，但是`gtest`在汇编的层面认不出来这些代码是我们的还是编译器加的。因此，`func.cpp`和`task1.cpp`两个文件的分支覆盖率不是很理想。尽管如此，我们的分支覆盖率平均也是远超`90%`，代码覆盖率接近`100%`。
 
-![image_2](D:\desktop\wordList2\images\image_2.png)
+![image_2](images\image_2.png)
 
 ### 10 异常处理
 
