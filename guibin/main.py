@@ -288,13 +288,14 @@ def startCalculate(win):
         if aParaChoose[i].get() == 0:
             paras.append(b'\0')
         else:
-            paras.append(bytes(aParaContent[i].get())[0])
+            paras.append(bytes(aParaContent[i].get(), encoding='utf-8')[0])
     if aParaChoose[3] == 0:
         paras.append(False)
     else:
         paras.append(True)
 
-    libc = cdll.LoadLibrary("D:\\DUALPRO\\WordList\\bin\\libword_list.dll")
+    libc = cdll.LoadLibrary("../\\bin\\libword_list.dll")
+    # Maybe you need to correct your path
 
     out = []
     start = time.time()
@@ -321,7 +322,7 @@ def startCalculate(win):
 
         ret = func(pointer(data_words),
                    c_int(len(data)),
-                   c_char(paras[0]),
+                   c_char((paras[0])),
                    c_char(paras[1]),
                    c_char(paras[2]),
                    c_bool(paras[3]))
