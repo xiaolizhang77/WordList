@@ -357,7 +357,7 @@ def startCalculate(win):
     end = time.time()
 
     runtime = end - start
-    print(start, end)
+    # print(start, end)
 
     ttk.Label(top, text="This calculation took %.2f s" % runtime, anchor="center",
               font=("Times New Roman", 15, "bold")).place(
@@ -384,7 +384,11 @@ def startCalculate(win):
 
         if name != "":
             with open(name, 'w') as f:
-                f.write("\n".join(result))
+                f.write(result[0])
+                f.write("\n")
+                for i in range(1, len(result)):
+                    f.write(str(result[i], encoding='utf-8'))
+                    f.write("\n")
                 f.close()
                 messagebox.showinfo(title="Success", message="Save successfully!")
         else:
